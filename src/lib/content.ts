@@ -53,7 +53,7 @@ export async function getSections(): Promise<
   }));
 }
 
-export const postPath = (p: Post) => `/${p.type}/${p.entry.id}`;
+export const postPath = (p: Post) => `/${p.type}/${p.entry.id.replace(/\.md$/, '')}`;
 
 // "08 Jun 2026" - post eyebrow; terse, unambiguous, no comma.
 const fmt = new Intl.DateTimeFormat('en-GB', {

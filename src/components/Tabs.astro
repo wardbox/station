@@ -11,12 +11,12 @@ const total = sections.reduce((n, s) => n + s.posts.length, 0);
 ---
 
 <nav class="tabs" aria-label="Sections" data-tabs>
-  <button class="tab" data-filter="all" aria-current="true">
+  <button class="tab" type="button" data-filter="all" aria-current="true">
     All <span class="count">{total}</span>
   </button>
   {
     sections.map((s) => (
-      <button class="tab" data-filter={s.type}>
+      <button class="tab" type="button" data-filter={s.type}>
         {s.label} <span class="count">{s.posts.length}</span>
       </button>
     ))
@@ -35,23 +35,23 @@ const total = sections.reduce((n, s) => n + s.posts.length, 0);
     font-size: 11px;
     letter-spacing: 0.07em;
     padding: 5px 11px;
-    color: #aeb2b0;
+    color: var(--text-muted);
     background: transparent;
     border: 1px solid var(--hairline);
     cursor: pointer;
     transition: color 0.14s ease, border-color 0.14s ease;
   }
   .tab:hover {
-    border-color: #5c6260;
+    border-color: var(--dim);
   }
   .tab[aria-current='true'] {
-    color: #fff;
-    border-color: #5c6260;
+    color: var(--text-bright);
+    border-color: var(--dim);
   }
   .count {
     color: var(--faint);
   }
   .tab[aria-current='true'] .count {
-    color: #c7cac8;
+    color: var(--count-active);
   }
 </style>

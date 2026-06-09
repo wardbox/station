@@ -27,7 +27,7 @@ pnpm preview  # serve the build
 
 Drop a Markdown file in the right section folder and push:
 
-```
+```text
 src/content/writing/my-post.md
 src/content/builds/my-project.md
 src/content/notes/a-quick-note.md

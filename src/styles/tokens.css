@@ -15,6 +15,10 @@
   --label: #868c8a; /* tracked-caps system labels */
   --faint: #9aa09e; /* dates, secondary readouts */
   --lead-dot: #4a504f; /* dotted leaders */
+  --text-bright: #fff;       /* full-white: active / selected labels */
+  --text-muted: #aeb2b0;     /* muted interactive labels (inactive tabs) */
+  --count-active: #c7cac8;   /* count badge text on active tab */
+  --code-bg: #00000033;      /* inline-code background overlay */
 
   /* The single accent - featured + active ONLY (Principle 2). Swap freely:
      change --accent, then set --on-accent (primary text on a filled accent

@@ -11,7 +11,7 @@ export async function getStaticPaths() {
     const entries = await getCollection(type);
     for (const entry of entries) {
       paths.push({
-        params: { type, id: entry.id },
+        params: { type, id: entry.id.replace(/\.md$/, '') },
         props: { post: { type, entry } satisfies Post },
       });
     }

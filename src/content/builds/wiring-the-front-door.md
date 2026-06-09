@@ -26,7 +26,7 @@ and zero cert work. That is the whole reason adding apps stays cheap.
 
 ## The loop
 
-```
+```text
 push code → Actions builds + pushes image → bumps tag in git → Argo reconciles → live
 ```
 

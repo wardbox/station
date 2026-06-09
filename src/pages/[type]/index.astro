@@ -17,7 +17,8 @@ export async function getStaticPaths() {
 
 const { type } = Astro.params as { type: PostType };
 const sections = await getSections();
-const section = sections.find((s) => s.type === type)!;
+const section = sections.find((s) => s.type === type);
+if (!section) throw new Error(`No section found for type "${type}"`);
 ---
 
 <Base title={TYPE_LABEL[type]}>

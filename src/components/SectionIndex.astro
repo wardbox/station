@@ -61,7 +61,7 @@ const { sections, limit } = Astro.props;
     border-bottom: 1px solid var(--hairline);
     padding-bottom: 6px;
     margin-bottom: 8px;
-    color: #cfd2d0;
+    color: var(--label);
   }
   .entry {
     display: flex;
@@ -75,7 +75,7 @@ const { sections, limit } = Astro.props;
   }
   .entry:hover .entry-title,
   .entry:focus-visible .entry-title {
-    color: #fff;
+    color: var(--text-bright);
   }
   .lead {
     flex: 1;
