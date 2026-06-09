@@ -1,0 +1,32 @@
+# Featherweight static server for the baked-in blog. No TLS here — the cluster's
+# ingress terminates HTTPS (build-spec: one front door). This just hands out the
+# HTML that was built into /srv.
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+:8080 {
+	root * /srv
+	encode gzip zstd
+
+	# Liveness/readiness target for the pod.
+	@health path /healthz
+	respond @health "ok" 200
+
+	file_server
+
+	# Astro emits a real 404 page; serve it for missing paths.
+	handle_errors {
+		rewrite * /{err.status_code}.html
+		file_server
+	}
+
+	# Minimal, honest hardening. Nothing security-theatre.
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}
