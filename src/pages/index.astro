@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import Telemetry from '../components/Telemetry.astro';
+import Header from '../components/Header.astro';
+import Latest from '../components/Latest.astro';
+import Tabs from '../components/Tabs.astro';
+import SectionIndex from '../components/SectionIndex.astro';
+import StatusLine from '../components/StatusLine.astro';
+import { getLatest, getSections } from '../lib/content';
+
+const latest = await getLatest();
+const sections = await getSections();
+---
+
+<Base>
+  <main class="field">
+    <Telemetry />
+    <Header />
+    {latest && <Latest post={latest} />}
+    <div class="body">
+      <Tabs sections={sections} />
+      <SectionIndex sections={sections} limit={3} />
+      <StatusLine />
+    </div>
+  </main>
+</Base>
+
+<style>
+  .body {
+    padding: 18px var(--pad-x) 24px;
+  }
+</style>
+
+<script>
+  // Real section filters - clicking a tab shows only that section. Default is
+  // "all". Progressive enhancement; without JS every section is visible.
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.tab'));
+  const cols = Array.from(
+    document.querySelectorAll<HTMLElement>('.col[data-section]'),
+  );
+  for (const tab of tabs) {
+    tab.addEventListener('click', () => {
+      const filter = tab.dataset.filter;
+      for (const t of tabs)
+        t.setAttribute('aria-current', String(t === tab));
+      for (const col of cols)
+        col.hidden = filter !== 'all' && col.dataset.section !== filter;
+    });
+  }
+
+  // Honest keybinds - the status line says J/K move, Enter opens, so they do.
+  // Vim convention: j / ArrowDown move down the list, k / ArrowUp move up.
+  // Position is read from the focused element each press, so it can't drift.
+  const items = () =>
+    Array.from(
+      document.querySelectorAll<HTMLAnchorElement>('.entry[href]'),
+    ).filter((r) => r.offsetParent !== null);
+
+  const move = (delta: 1 | -1) => {
+    const list = items();
+    if (!list.length) return;
+    const cur = list.indexOf(document.activeElement as HTMLAnchorElement);
+    // Nothing focused yet: j starts at the top, k starts at the bottom.
+    const next =
+      cur === -1
+        ? delta === 1
+          ? 0
+          : list.length - 1
+        : Math.max(0, Math.min(list.length - 1, cur + delta));
+    list[next].focus();
+  };
+
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target as HTMLElement)?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if (e.key === 'j' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      move(1); // down
+    } else if (e.key === 'k' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      move(-1); // up
+    }
+    // Enter on a focused entry follows the link natively.
+  });
+</script>

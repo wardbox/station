@@ -1,0 +1,119 @@
+---
+// Columns by type. Each entry: title left, dotted leader, date or live status
+// right. No red here - the latest band owns the accent for this view; green
+// appears only for genuine live status.
+import { formatShort, postPath, type Post, type PostType } from '../lib/content';
+
+interface Props {
+  sections: { type: PostType; label: string; posts: Post[] }[];
+  // Hard cap per section on the index; omit to show everything (archive pages).
+  limit?: number;
+}
+const { sections, limit } = Astro.props;
+---
+
+<div class="cols">
+  {
+    sections.map((section) => {
+      const shown =
+        limit != null ? section.posts.slice(0, limit) : section.posts;
+      const hidden = section.posts.length - shown.length;
+      return (
+      <section class="col" data-section={section.type}>
+        <div class="label section-label">{section.label}</div>
+        {shown.map((post) => (
+          <a class="entry" href={postPath(post)}>
+            <span class="entry-title">{post.entry.data.title}</span>
+            <span class="lead" aria-hidden="true" />
+            {post.entry.data.live ? (
+              <span class="stat live">LIVE</span>
+            ) : (
+              <time
+                class="entry-date"
+                datetime={post.entry.data.date.toISOString()}
+              >
+                {formatShort(post.entry.data.date)}
+              </time>
+            )}
+          </a>
+        ))}
+        {section.posts.length === 0 && (
+          <div class="entry empty mono">nothing filed yet</div>
+        )}
+        {hidden > 0 && (
+          <a class="more" href={`/${section.type}`}>
+            +{hidden} more <span class="more-arrow">&rarr;</span>
+          </a>
+        )}
+      </section>
+      );
+    })
+  }
+</div>
+
+<style>
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .section-label {
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    color: var(--label);
+  }
+  .entry {
+    display: flex;
+    align-items: baseline;
+    padding: 6px 0;
+    font-size: 14px;
+  }
+  .entry-title {
+    color: var(--text);
+    transition: color 0.14s ease;
+  }
+  .entry:hover .entry-title,
+  .entry:focus-visible .entry-title {
+    color: var(--text-bright);
+  }
+  .lead {
+    flex: 1;
+    border-bottom: 1px dotted var(--lead-dot);
+    margin: 0 8px;
+    transform: translateY(-3px);
+  }
+  .entry-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .stat {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: var(--track-mono);
+  }
+  .stat.live {
+    color: var(--live);
+  }
+  .empty {
+    color: var(--label);
+    font-size: 11px;
+  }
+  .more {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: var(--track-mono);
+    color: var(--faint);
+  }
+  .more:hover {
+    color: var(--text);
+  }
+  .more-arrow {
+    color: var(--accent);
+  }
+
+</style>

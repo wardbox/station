@@ -1,0 +1,68 @@
+---
+// Self-hosted fonts - no external calls at runtime; the build stays hermetic
+// and the field stays confidential-feeling.
+import '@fontsource/barlow/400.css';
+import '@fontsource/barlow/500.css';
+import '@fontsource/barlow-semi-condensed/500.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import { site } from '../lib/site';
+
+// Preload the latin woff2 used above the fold so they're fetched before first
+// paint - kills the flash of fallback text swapping to our faces. These resolve
+// to the same hashed URLs the @font-face src points at, so the preload is used.
+import displayFont from '@fontsource/barlow-semi-condensed/files/barlow-semi-condensed-latin-500-normal.woff2';
+import bodyFont from '@fontsource/barlow/files/barlow-latin-400-normal.woff2';
+import bodyMediumFont from '@fontsource/barlow/files/barlow-latin-500-normal.woff2';
+import monoFont from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2';
+const preloadFonts = [displayFont, bodyFont, bodyMediumFont, monoFont];
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = site.tagline } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : site.name;
+// Absolute canonical URL - falls back gracefully before `site` is the real domain.
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {
+      preloadFonts.map((href) => (
+        <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+      ))
+    }
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={site.name}
+      href="/rss.xml"
+    />
+    <link rel="canonical" href={canonical} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark" />
+    {/* Social cards - honest title + summary; no image yet (text-first). */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+  </head>
+  <body>
+    <div class="backdrop" aria-hidden="true"></div>
+    <slot />
+    <div class="grain" aria-hidden="true"></div>
+  </body>
+</html>

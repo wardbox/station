@@ -1,0 +1,56 @@
+---
+// A muted mono "now -" line (what you are actually working on) plus keyboard
+// hints. Honest, low-key, human. The keys listed here are really wired.
+import { site } from '../lib/site';
+---
+
+<div class="status">
+  <div class="now">
+    <span class="dot" aria-hidden="true">&#9679;</span> now: {site.now}
+  </div>
+  <div class="keys" aria-label="Keyboard hints">
+    {
+      site.keys.map((k) => (
+        <span class="key">
+          <span class="kc">{k.kc}</span>
+          <span class="label">{k.label}</span>
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin-top: 24px;
+    border-top: 1px solid var(--hairline);
+    padding-top: 14px;
+  }
+  .now {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--faint);
+  }
+  .keys {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .key {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+  }
+  @media (max-width: 560px) {
+    .status {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  }
+</style>

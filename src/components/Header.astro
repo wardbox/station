@@ -1,0 +1,47 @@
+---
+// Name, a plain location label, one honest tagline. No seal (Principle 1).
+import { site } from '../lib/site';
+---
+
+<header class="head">
+  <div>
+    <div class="label who">{site.owner} &middot; {site.location}</div>
+    <div class="wordmark">{site.name}</div>
+  </div>
+  <div class="label tagline">{site.tagline}</div>
+</header>
+
+<style>
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 24px var(--pad-x) 18px;
+  }
+  .who {
+    margin-bottom: 3px;
+  }
+  .wordmark {
+    font-family: var(--display);
+    font-weight: var(--weight-medium);
+    font-size: 32px;
+    line-height: 0.9;
+    letter-spacing: 0.01em;
+    color: var(--text);
+  }
+  .tagline {
+    text-align: right;
+    line-height: 1.7;
+    max-width: 16ch;
+  }
+  @media (max-width: 560px) {
+    .head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .tagline {
+      text-align: left;
+    }
+  }
+</style>
