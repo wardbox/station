@@ -1,0 +1,36 @@
+---
+// Tracked eyebrow + large title. The rest of the chrome (back, stats) lives
+// elsewhere; this is just the top of the reading field.
+import { TYPE_LABEL, formatDate, type Post } from '../lib/content';
+
+interface Props {
+  post: Post;
+}
+const { post } = Astro.props;
+const { data } = post.entry;
+---
+
+<div class="label eyebrow">
+  {TYPE_LABEL[post.type]} &middot; {formatDate(data.date)}
+</div>
+<h1 class="title">{data.title}</h1>
+
+<style>
+  .eyebrow {
+    color: #cfd2d0;
+    margin-bottom: 8px;
+  }
+  .title {
+    font-family: var(--display);
+    font-weight: var(--weight-medium);
+    font-size: 34px;
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 560px) {
+    .title {
+      font-size: 27px;
+    }
+  }
+</style>

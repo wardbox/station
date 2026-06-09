@@ -1,0 +1,47 @@
+---
+// Edge chrome shared by post + section pages. The back link points to the
+// natural parent (a post's section, a section's index); the wordmark always
+// goes home. So from a post you can step back to its section OR to the index.
+import { site } from '../lib/site';
+
+interface Props {
+  backHref?: string;
+  backLabel?: string;
+}
+const { backHref = '/', backLabel = 'index' } = Astro.props;
+---
+
+<div class="topbar">
+  <a class="back" href={backHref}
+    ><span class="arrow">&larr;</span> <span class="back-label">{backLabel}</span></a
+  >
+  <a class="wordmark" href="/">{site.name}</a>
+</div>
+
+<style>
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px var(--pad-x);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .back {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--faint);
+  }
+  .back:hover {
+    color: var(--text);
+  }
+  .back .arrow {
+    color: var(--accent);
+  }
+  .wordmark {
+    font-family: var(--display);
+    font-weight: var(--weight-medium);
+    font-size: 16px;
+    letter-spacing: 0.01em;
+  }
+</style>

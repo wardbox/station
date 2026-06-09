@@ -1,0 +1,53 @@
+---
+// The single red band = the latest post. The one place red lives in this view
+// - a functional spotlight, never decoration (Principle 2).
+import { formatShort, postPath, type Post } from '../lib/content';
+
+interface Props {
+  post: Post;
+}
+const { post } = Astro.props;
+const { data } = post.entry;
+---
+
+<a class="latest" href={postPath(post)}>
+  <div>
+    <div class="latest-eyebrow">Latest</div>
+    <div class="latest-title">{data.title}</div>
+  </div>
+  <span class="latest-date">{formatShort(data.date)}</span>
+</a>
+
+<style>
+  .latest {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    background: var(--accent);
+    padding: 12px var(--pad-x);
+  }
+  .latest:hover .latest-title {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .latest-eyebrow {
+    font-size: 9.5px;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--accent-tint);
+    margin-bottom: 1px;
+  }
+  .latest-title {
+    font-family: var(--display);
+    font-weight: var(--weight-medium);
+    font-size: 19px;
+    color: var(--on-accent);
+  }
+  .latest-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent-tint);
+    white-space: nowrap;
+  }
+</style>

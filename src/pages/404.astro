@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import Telemetry from '../components/Telemetry.astro';
+import Topbar from '../components/Topbar.astro';
+---
+
+<Base title="404">
+  <main class="field">
+    <Telemetry />
+    <Topbar />
+    <div class="body">
+      <p class="label code">404 &middot; not found</p>
+      <h1 class="title">nothing&rsquo;s filed here.</h1>
+      <p class="lede">
+        that page doesn&rsquo;t exist, or never did. The index has
+        everything that does.
+      </p>
+      <a class="home" href="/"><span class="arrow">&larr;</span> back to index</a>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .body {
+    padding: 40px var(--pad-x) 48px;
+  }
+  .code {
+    color: #cfd2d0;
+    margin-bottom: 10px;
+  }
+  .title {
+    font-family: var(--display);
+    font-weight: var(--weight-medium);
+    font-size: 34px;
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    margin-bottom: 12px;
+  }
+  .lede {
+    color: var(--faint);
+    max-width: 46ch;
+    margin-bottom: 24px;
+  }
+  .home {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--faint);
+  }
+  .home:hover {
+    color: var(--text);
+  }
+  .home .arrow {
+    color: var(--accent);
+  }
+</style>

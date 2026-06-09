@@ -1,0 +1,31 @@
+---
+// One route for every section. Maps /writing/…, /builds/…, /notes/… onto the
+// matching collection. New section files need no new routing - drop and push.
+import { getCollection, render } from 'astro:content';
+import { POST_TYPES, type Post } from '../../lib/content';
+import PostLayout from '../../layouts/Post.astro';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const type of POST_TYPES) {
+    const entries = await getCollection(type);
+    for (const entry of entries) {
+      paths.push({
+        params: { type, id: entry.id },
+        props: { post: { type, entry } satisfies Post },
+      });
+    }
+  }
+  return paths;
+}
+
+interface Props {
+  post: Post;
+}
+const { post } = Astro.props as Props;
+const { Content } = await render(post.entry);
+---
+
+<PostLayout post={post}>
+  <Content />
+</PostLayout>

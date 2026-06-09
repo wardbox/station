@@ -1,0 +1,54 @@
+/*
+  Design tokens - the calibrated opening position from the design spec, applied
+  in the contained-field composition. Tune these in the browser; this is the one
+  place to negotiate. The grammar is law (one accent, tracked labels, dotted
+  leaders, restrained weights, honest words); these exact values are not.
+*/
+:root {
+  /* --- Color --- */
+  --outer: #111414; /* the ground the field sits on */
+  --field: #191d1e; /* the flat panel; a photo can sit behind at low opacity */
+  --border: #2b3031; /* the field's single edge */
+  --hairline: #363b3c; /* internal dividing lines */
+  --dim: #5a605e; /* faintest structural marks (telemetry separators) */
+  --text: #eceae5; /* primary - titles, prose */
+  --label: #868c8a; /* tracked-caps system labels */
+  --faint: #9aa09e; /* dates, secondary readouts */
+  --lead-dot: #4a504f; /* dotted leaders */
+
+  /* The single accent - featured + active ONLY (Principle 2). Swap freely:
+     change --accent, then set --on-accent (primary text on a filled accent
+     band) and --accent-tint (secondary text on it) for contrast.
+       red    #e8112d  on #fff      tint #ffd2d8
+       amber  #e3a72c  on #1a1305   tint #6e4e12
+       emerald #1faa68 on #07140d   tint #0b321f   <- current (distinguished green)
+       blue   #3366e0  on #fff      tint #cdd9ff  */
+  --accent: #1faa68; /* distinguished emerald */
+  --on-accent: #07140d; /* primary text sitting on the accent band */
+  --accent-tint: #0b321f; /* secondary text on the accent band (AA: 4.7) */
+  /* Live / now ONLY - moved to cyan so it never blurs with the green accent.
+     (Was mint #5dd39e back when the accent was red.) */
+  --live: #34c0d4;
+
+  /* --- Type: condensed humanist display + grotesk body + mono readouts --- */
+  --display: 'Barlow Semi Condensed', system-ui, sans-serif;
+  --body: 'Barlow', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+  --weight-medium: 500;
+
+  /* --- Rhythm --- */
+  --track-label: 0.16em;
+  --track-mono: 0.06em;
+
+  /* --- Layout --- */
+  --field-w: 720px; /* the field is deliberately narrow and unhurried */
+  --pad-x: 26px; /* the field's horizontal gutter */
+
+  /* Backdrop photo: set --backdrop-image to url('/your-photo.jpg') to bring it
+     in behind the field for cinematic depth. Stays desaturated and quiet. */
+  --backdrop-image: none;
+  --backdrop-opacity: 0.1;
+
+  /* Film grain - tactile texture, not depth. Dial here; ~0.04 is a whisper. */
+  --grain-opacity: 0.05;
+}

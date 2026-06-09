@@ -1,0 +1,54 @@
+---
+// Terse, functional readouts - all of it true of a static site. Real commit,
+// real build time, real coordinates, real clock. Precision, not cosplay.
+import { rev, builtLabel } from '../lib/build';
+import { site } from '../lib/site';
+---
+
+<div class="telemetry">
+  <span>REV {rev} <span class="sep">//</span> BUILT {builtLabel}</span>
+  <span
+    >{site.coords} <span class="sep">//</span>
+    <time id="clock" class="clock">--:--:--</time></span
+  >
+</div>
+
+<script>
+  const el = document.getElementById('clock');
+  if (el) {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const tick = () => {
+      const d = new Date();
+      el.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+</script>
+
+<style>
+  .telemetry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 7px var(--pad-x);
+    border-bottom: 1px solid var(--hairline);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+  }
+  .sep {
+    color: var(--dim);
+  }
+  .clock {
+    color: var(--text);
+  }
+  @media (max-width: 560px) {
+    .telemetry {
+      font-size: 9px;
+      gap: 8px;
+    }
+  }
+</style>
