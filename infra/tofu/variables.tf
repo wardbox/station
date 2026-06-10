@@ -10,15 +10,15 @@ variable "name_prefix" {
   nullable    = false
 }
 
-variable "datacenter" {
-  description = "Hetzner datacenter. hil-dc1 = Hillsboro OR; ash-dc1 = Ashburn VA."
+variable "location" {
+  description = "Hetzner location. hil = Hillsboro OR; ash = Ashburn VA. (Replaces the deprecated datacenter attribute.)"
   type        = string
-  default     = "hil-dc1"
+  default     = "hil"
   nullable    = false
 
   validation {
-    condition     = contains(["hil-dc1", "ash-dc1"], var.datacenter)
-    error_message = "Use a US datacenter: hil-dc1 (Hillsboro) or ash-dc1 (Ashburn)."
+    condition     = contains(["hil", "ash"], var.location)
+    error_message = "Use a US location: hil (Hillsboro) or ash (Ashburn)."
   }
 }
 
@@ -49,21 +49,21 @@ variable "k3s_version" {
 }
 
 variable "control_plane_type" {
-  description = "Server type for the control-plane node (cax* = arm64, cpx*/cx* = amd64)."
+  description = "Server type for the control-plane node. US locations (hil/ash) are x86-only: use cpx*. cax* (arm64) is EU-only."
   type        = string
-  default     = "cax11"
+  default     = "cpx21"
   nullable    = false
 }
 
 variable "agent_type" {
-  description = "Server type for agent nodes."
+  description = "Server type for agent nodes. US = cpx* (x86)."
   type        = string
-  default     = "cax21"
+  default     = "cpx21"
   nullable    = false
 }
 
 variable "agent_count" {
-  description = "Number of agent (worker) nodes."
+  description = "Number of agent (worker) nodes. 0 is valid — the control plane schedules workloads too, so a single node runs the blog."
   type        = number
   default     = 1
   nullable    = false

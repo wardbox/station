@@ -7,13 +7,13 @@ admin_cidrs = ["203.0.113.7/32"]
 
 # Optional overrides — defaults are the "start small" opening position:
 # name_prefix          = "station"
-# datacenter           = "hil-dc1"      # Hillsboro, OR
+# location             = "hil"          # Hillsboro, OR
 # network_zone         = "us-west"
 # image                = "ubuntu-24.04"
 # k3s_version          = "v1.35.5+k3s1"
-# control_plane_type   = "cax11"        # arm64, 2 vCPU / 4 GB
-# agent_type           = "cax21"        # arm64, 4 vCPU / 8 GB
-# agent_count          = 1
+# control_plane_type   = "cpx21"        # x86, 3 vCPU / 4 GB  (hil is x86-only)
+# agent_type           = "cpx21"        # x86, 3 vCPU / 4 GB
+# agent_count          = 1              # set 0 for a cheaper single-node start
 # network_cidr         = "10.0.0.0/16"
 # subnet_cidr          = "10.0.1.0/24"
 # ssh_public_key_path  = "~/.ssh/id_ed25519.pub"

@@ -4,8 +4,8 @@ variable "name_prefix" {
   nullable    = false
 }
 
-variable "datacenter" {
-  description = "Hetzner datacenter (e.g. hil-dc1)."
+variable "location" {
+  description = "Hetzner location (e.g. hil)."
   type        = string
   nullable    = false
 }

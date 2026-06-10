@@ -24,7 +24,7 @@ module "cluster" {
   source = "./modules/cluster"
 
   name_prefix          = var.name_prefix
-  datacenter           = var.datacenter
+  location             = var.location
   image                = var.image
   k3s_version          = var.k3s_version
   control_plane_type   = var.control_plane_type

@@ -24,7 +24,7 @@ resource "random_password" "k3s_token" {
 resource "hcloud_primary_ip" "control_plane_ipv4" {
   name        = "${var.name_prefix}-cp-ipv4"
   type        = "ipv4"
-  datacenter  = var.datacenter
+  location    = var.location
   auto_delete = false
 }
 
@@ -37,7 +37,7 @@ resource "hcloud_server" "control_plane" {
   name               = "${var.name_prefix}-cp"
   server_type        = var.control_plane_type
   image              = var.image
-  datacenter         = var.datacenter
+  location           = var.location
   ssh_keys           = [var.ssh_key_id]
   placement_group_id = hcloud_placement_group.this.id
   firewall_ids       = [var.firewall_id]
@@ -68,7 +68,7 @@ resource "hcloud_server" "agent" {
   name               = "${var.name_prefix}-agent-${count.index + 1}"
   server_type        = var.agent_type
   image              = var.image
-  datacenter         = var.datacenter
+  location           = var.location
   ssh_keys           = [var.ssh_key_id]
   placement_group_id = hcloud_placement_group.this.id
   firewall_ids       = [var.firewall_id]
@@ -106,19 +106,26 @@ resource "terraform_data" "kubeconfig" {
     private_key = file(pathexpand(var.ssh_private_key_path))
   }
 
+  # Bounded wait (~5 min) so a failed bootstrap errors clearly instead of
+  # hanging forever.
   provisioner "remote-exec" {
     inline = [
-      "until test -f /etc/rancher/k3s/k3s.yaml; do sleep 3; done",
-      "until k3s kubectl get node >/dev/null 2>&1; do sleep 3; done",
+      "for i in $(seq 1 60); do test -f /etc/rancher/k3s/k3s.yaml && k3s kubectl get node >/dev/null 2>&1 && exit 0; sleep 5; done; echo 'k3s did not become ready in time' >&2; exit 1",
     ]
   }
 
+  # StrictHostKeyChecking=no + /dev/null known-hosts avoids failures when a
+  # recreated node reuses an IP (stale host key). pipefail + test -s make a
+  # failed fetch error loudly instead of writing an empty kubeconfig.
   provisioner "local-exec" {
-    command = <<-EOT
-      ssh -o StrictHostKeyChecking=accept-new -i '${pathexpand(var.ssh_private_key_path)}' root@${hcloud_primary_ip.control_plane_ipv4.ip_address} 'cat /etc/rancher/k3s/k3s.yaml' \
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOT
+      set -euo pipefail
+      ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=15 -i '${pathexpand(var.ssh_private_key_path)}' root@${hcloud_primary_ip.control_plane_ipv4.ip_address} 'cat /etc/rancher/k3s/k3s.yaml' \
         | sed 's#https://127.0.0.1:6443#https://${hcloud_primary_ip.control_plane_ipv4.ip_address}:6443#' \
         > '${path.root}/kubeconfig.yaml'
       chmod 600 '${path.root}/kubeconfig.yaml'
+      test -s '${path.root}/kubeconfig.yaml'
     EOT
   }
 }
