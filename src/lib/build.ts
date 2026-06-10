@@ -13,7 +13,12 @@ const run = (cmd: string, fallback: string) => {
   }
 };
 
-export const rev = run('git rev-parse --short HEAD', 'dev');
+// In CI the real commit arrives as PUBLIC_REV (the runtime image has no .git);
+// locally we read it straight from git. Either way it's the honest commit.
+const envRev = process.env.PUBLIC_REV?.trim();
+export const rev = envRev
+  ? envRev.slice(0, 7)
+  : run('git rev-parse --short HEAD', 'dev');
 
 const d = new Date();
 const pad = (n: number) => String(n).padStart(2, '0');

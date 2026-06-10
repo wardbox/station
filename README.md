@@ -50,6 +50,26 @@ draft: false           # optional - hidden in production builds
 
 The newest post across all sections is the one the red featured bar spotlights.
 
+## Container & CI
+
+The blog ships as a featherweight static image: the site is built once and baked
+in behind a tiny [Caddy](https://caddyserver.com) file server. No Node, no app
+server, no state at runtime (build-spec Principle 8).
+
+```bash
+docker build --build-arg REV=$(git rev-parse HEAD) -t station .
+docker run --rm -p 8099:8080 station   # http://localhost:8099
+```
+
+- Serves on `:8080`, runs as non-root, exposes `/healthz` for k8s probes.
+- `.github/workflows/build.yml` runs on push to `main`, `pull_request`, and
+  `workflow_dispatch` (manual). Only a push to `main` publishes to GHCR;
+  PRs and manual runs validate the build without pushing. **Build only** —
+  it never deploys (build-spec Principle 6). Argo CD reconciles the deploy
+  from the config repo; the tag-bump hand-off lands with that repo.
+- The real commit is passed in as `REV` so the build telemetry stays honest
+  without baking `.git` into the image.
+
 ## Design system
 
 - `src/styles/tokens.css` - the calibrated opening position. Tune here.
