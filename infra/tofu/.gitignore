@@ -1,0 +1,23 @@
+# State lives in the remote backend, never here.
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+crash.*.log
+
+# NOTE: .terraform.lock.hcl is committed on purpose (dependency lock).
+
+# Secrets / local config
+.env
+*.tfvars
+!*.tfvars.example
+
+# Fetched cluster credentials
+kubeconfig.yaml
+kubeconfig
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

@@ -1,0 +1,20 @@
+#cloud-config
+# Agent bootstrap. Joins the control plane over the private network.
+write_files:
+  - path: /usr/local/bin/install-k3s
+    permissions: "0755"
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      iface="$(ip -o -4 addr show | awk '$4 ~ /^10\./ {print $2; exit}')"
+      priv_ip="$(ip -o -4 addr show | awk '$4 ~ /^10\./ {print $4; exit}' | cut -d/ -f1)"
+      curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_VERSION="${k3s_version}" \
+        K3S_URL="https://${server_ip}:6443" \
+        K3S_TOKEN="${k3s_token}" \
+        INSTALL_K3S_EXEC="agent \
+          --node-ip $${priv_ip} \
+          --flannel-iface $${iface}" \
+        sh -
+runcmd:
+  - /usr/local/bin/install-k3s

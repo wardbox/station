@@ -1,0 +1,25 @@
+#cloud-config
+# Control-plane bootstrap. k3s installs itself on first boot, bound to the
+# private network. Traefik + ServiceLB + local-path stay enabled (k3s defaults)
+# so ingress and storage work without extra components; Hetzner CCM/CSI are
+# added later by Argo if/when needed.
+write_files:
+  - path: /usr/local/bin/install-k3s
+    permissions: "0755"
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      # The private NIC is whichever interface carries our 10.x address.
+      iface="$(ip -o -4 addr show | awk '$4 ~ /^10\./ {print $2; exit}')"
+      curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_VERSION="${k3s_version}" \
+        K3S_TOKEN="${k3s_token}" \
+        INSTALL_K3S_EXEC="server \
+          --node-ip ${node_ip} \
+          --advertise-address ${node_ip} \
+          --tls-san ${public_ip} \
+          --flannel-iface $${iface} \
+          --write-kubeconfig-mode 0644" \
+        sh -
+runcmd:
+  - /usr/local/bin/install-k3s
