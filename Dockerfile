@@ -6,7 +6,7 @@ FROM node:22-slim AS build
 WORKDIR /app
 
 # pnpm via corepack, pinned for reproducible installs.
-RUN corepack enable && corepack prepare pnpm@10 --activate
+RUN corepack enable && corepack prepare pnpm@10.34.2 --activate
 
 # Install deps first so this layer caches until the lockfile actually changes.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

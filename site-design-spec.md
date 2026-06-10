@@ -63,7 +63,7 @@ Treat these as a calibrated *opening position*, not law. Adjust against real
 content and a real backdrop photo.
 
 ### Color
-```
+```text
 bg / field        #1b1f20   (cool desaturated near-black; photo sits behind at ~8%)
 panel border      #2e3334
 hairline          #3a3f40
@@ -75,7 +75,7 @@ accent / green    #5dd39e   (live / now only)
 ```
 
 ### Type
-```
+```text
 display / titles  Barlow Semi Condensed, 500   — section + post titles, header
 body / labels     Barlow, 400–500              — prose, tracked-caps labels
 mono / readouts   IBM Plex Mono, 400           — dates, counts, status, keycaps
