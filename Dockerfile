@@ -24,6 +24,12 @@ RUN pnpm build
 # A tiny static file server and nothing else. Content is baked in at build time;
 # there is no Node, no app server, no state.
 FROM caddy:2-alpine
+
+# The upstream Caddy binary carries cap_net_bind_service for low ports. We serve
+# on 8080 and drop all capabilities in Kubernetes, so remove the file capability
+# or the kernel refuses to exec it under no-new-privileges/cap-drop ALL.
+RUN apk add --no-cache libcap && setcap -r /usr/bin/caddy && apk del libcap
+
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/dist /srv
 
