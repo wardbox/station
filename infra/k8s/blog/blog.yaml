@@ -77,8 +77,14 @@ kind: Ingress
 metadata:
   name: blog
   namespace: blog
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http01
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - stationsystems.dev
+      secretName: blog-tls
   rules:
     - host: stationsystems.dev
       http:
