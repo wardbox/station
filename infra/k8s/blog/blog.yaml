@@ -80,8 +80,8 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    # No host yet — answers on the raw node IP. A host rule lands with the domain.
-    - http:
+    - host: stationsystems.dev
+      http:
         paths:
           - path: /
             pathType: Prefix
