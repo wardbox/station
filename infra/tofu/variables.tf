@@ -23,7 +23,7 @@ variable "location" {
 }
 
 variable "network_zone" {
-  description = "Hetzner network zone, must match the datacenter (us-west for hil, us-east for ash)."
+  description = "Hetzner network zone, must match the location (us-west for hil, us-east for ash)."
   type        = string
   default     = "us-west"
   nullable    = false
@@ -79,6 +79,11 @@ variable "network_cidr" {
   type        = string
   default     = "10.0.0.0/16"
   nullable    = false
+
+  validation {
+    condition     = can(cidrhost(var.network_cidr, 0))
+    error_message = "network_cidr must be a valid IPv4 CIDR (e.g. 10.0.0.0/16)."
+  }
 }
 
 variable "subnet_cidr" {
@@ -86,6 +91,11 @@ variable "subnet_cidr" {
   type        = string
   default     = "10.0.1.0/24"
   nullable    = false
+
+  validation {
+    condition     = can(cidrhost(var.subnet_cidr, 0))
+    error_message = "subnet_cidr must be a valid IPv4 CIDR (e.g. 10.0.1.0/24)."
+  }
 }
 
 variable "ssh_public_key_path" {
@@ -108,7 +118,7 @@ variable "admin_cidrs" {
   nullable    = false
 
   validation {
-    condition     = length(var.admin_cidrs) > 0
-    error_message = "Set at least one admin CIDR (e.g. [\"203.0.113.7/32\"]). Find yours: curl -s ifconfig.me"
+    condition     = length(var.admin_cidrs) > 0 && alltrue([for c in var.admin_cidrs : can(cidrhost(c, 0))])
+    error_message = "Set at least one valid admin CIDR (e.g. [\"203.0.113.7/32\"]). Find yours: curl -s ifconfig.me"
   }
 }

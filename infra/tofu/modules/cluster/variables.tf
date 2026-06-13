@@ -20,6 +20,11 @@ variable "k3s_version" {
   description = "Pinned k3s version (INSTALL_K3S_VERSION format)."
   type        = string
   nullable    = false
+
+  validation {
+    condition     = can(regex("^v[0-9]+\\.[0-9]+\\.[0-9]+\\+k3s[0-9]+$", var.k3s_version))
+    error_message = "k3s_version must match format: v1.35.5+k3s1."
+  }
 }
 
 variable "control_plane_type" {
@@ -38,6 +43,11 @@ variable "agent_count" {
   description = "Number of agent nodes."
   type        = number
   nullable    = false
+
+  validation {
+    condition     = var.agent_count >= 0
+    error_message = "agent_count must be non-negative."
+  }
 }
 
 variable "network_id" {

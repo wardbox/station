@@ -114,14 +114,16 @@ resource "terraform_data" "kubeconfig" {
     ]
   }
 
-  # StrictHostKeyChecking=no + /dev/null known-hosts avoids failures when a
-  # recreated node reuses an IP (stale host key). pipefail + test -s make a
+  # Pin the fresh host key before fetching kubeconfig. pipefail + test -s make a
   # failed fetch error loudly instead of writing an empty kubeconfig.
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
       set -euo pipefail
-      ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=15 -i '${pathexpand(var.ssh_private_key_path)}' root@${hcloud_primary_ip.control_plane_ipv4.ip_address} 'cat /etc/rancher/k3s/k3s.yaml' \
+      known_hosts="$(mktemp)"
+      trap 'rm -f "$known_hosts"' EXIT
+      ssh-keyscan -T 15 -H '${hcloud_primary_ip.control_plane_ipv4.ip_address}' > "$known_hosts"
+      ssh -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$known_hosts" -o ConnectTimeout=15 -i '${pathexpand(var.ssh_private_key_path)}' root@${hcloud_primary_ip.control_plane_ipv4.ip_address} 'cat /etc/rancher/k3s/k3s.yaml' \
         | sed 's#https://127.0.0.1:6443#https://${hcloud_primary_ip.control_plane_ipv4.ip_address}:6443#' \
         > '${path.root}/kubeconfig.yaml'
       chmod 600 '${path.root}/kubeconfig.yaml'

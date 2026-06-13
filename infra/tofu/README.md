@@ -1,4 +1,4 @@
-we # OpenTofu build-out — the substrate
+# OpenTofu build-out — the substrate
 
 How we provision the cluster's substrate with OpenTofu. This is the
 **implementation plan** for build-spec layer 1 ("OpenTofu — the substrate.
