@@ -29,8 +29,8 @@ variable "network_zone" {
   nullable    = false
 
   validation {
-    condition     = contains(["us-west", "us-east"], var.network_zone)
-    error_message = "Use us-west (Hillsboro) or us-east (Ashburn)."
+    condition     = (var.location == "hil" && var.network_zone == "us-west") || (var.location == "ash" && var.network_zone == "us-east")
+    error_message = "network_zone must match location: hil requires us-west; ash requires us-east."
   }
 }
 
@@ -81,7 +81,7 @@ variable "network_cidr" {
   nullable    = false
 
   validation {
-    condition     = can(cidrhost(var.network_cidr, 0))
+    condition     = can(cidrhost(var.network_cidr, 0)) && can(regex("\\.", cidrhost(var.network_cidr, 0)))
     error_message = "network_cidr must be a valid IPv4 CIDR (e.g. 10.0.0.0/16)."
   }
 }
@@ -93,7 +93,7 @@ variable "subnet_cidr" {
   nullable    = false
 
   validation {
-    condition     = can(cidrhost(var.subnet_cidr, 0))
+    condition     = can(cidrhost(var.subnet_cidr, 0)) && can(regex("\\.", cidrhost(var.subnet_cidr, 0)))
     error_message = "subnet_cidr must be a valid IPv4 CIDR (e.g. 10.0.1.0/24)."
   }
 }
