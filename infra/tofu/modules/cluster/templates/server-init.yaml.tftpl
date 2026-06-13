@@ -1,0 +1,38 @@
+#cloud-config
+# Control-plane bootstrap. The stock image's netplan only configures the public
+# eth0, so we bring the private NIC up via DHCP and wait for its 10.x address
+# BEFORE installing k3s — otherwise k3s starts with an empty --flannel-iface and
+# crash-loops. k3s defaults (Traefik + ServiceLB + local-path) stay enabled;
+# Hetzner CCM/CSI come later via Argo.
+write_files:
+  - path: /usr/local/bin/install-k3s
+    permissions: "0755"
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      # The private NIC is the ethernet that isn't the public eth0.
+      priv_if="$(ls /sys/class/net | grep -vE '^(lo|eth0)$' | head -1)"
+      if [ -z "$${priv_if}" ]; then echo "no private NIC found" >&2; exit 1; fi
+
+      # Configure the private NIC (DHCP, without letting it touch the default route).
+      printf 'network:\n  version: 2\n  ethernets:\n    %s:\n      dhcp4: true\n      dhcp4-overrides:\n        use-routes: false\n' "$${priv_if}" >/etc/netplan/60-private.yaml
+      chmod 600 /etc/netplan/60-private.yaml
+      netplan apply
+
+      # Wait for the private IP to actually land before starting k3s.
+      priv_ip=""
+      for _ in $(seq 1 60); do
+        priv_ip="$(ip -o -4 addr show "$${priv_if}" | awk '{print $4}' | cut -d/ -f1)"
+        [ -n "$${priv_ip}" ] && break
+        sleep 2
+      done
+      if [ -z "$${priv_ip}" ]; then echo "private IP never came up on $${priv_if}" >&2; exit 1; fi
+
+      curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_VERSION="${k3s_version}" \
+        K3S_TOKEN="${k3s_token}" \
+        INSTALL_K3S_EXEC="server --node-ip ${node_ip} --advertise-address ${node_ip} --tls-san ${public_ip} --flannel-iface $${priv_if} --write-kubeconfig-mode 0644" \
+        sh -
+runcmd:
+  - /usr/local/bin/install-k3s

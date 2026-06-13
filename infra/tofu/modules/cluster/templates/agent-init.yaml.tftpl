@@ -1,0 +1,33 @@
+#cloud-config
+# Agent bootstrap. Brings the private NIC up (DHCP) and waits for its 10.x
+# address, then joins the control plane over the private network.
+write_files:
+  - path: /usr/local/bin/install-k3s
+    permissions: "0755"
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      priv_if="$(ls /sys/class/net | grep -vE '^(lo|eth0)$' | head -1)"
+      if [ -z "$${priv_if}" ]; then echo "no private NIC found" >&2; exit 1; fi
+
+      printf 'network:\n  version: 2\n  ethernets:\n    %s:\n      dhcp4: true\n      dhcp4-overrides:\n        use-routes: false\n' "$${priv_if}" >/etc/netplan/60-private.yaml
+      chmod 600 /etc/netplan/60-private.yaml
+      netplan apply
+
+      priv_ip=""
+      for _ in $(seq 1 60); do
+        priv_ip="$(ip -o -4 addr show "$${priv_if}" | awk '{print $4}' | cut -d/ -f1)"
+        [ -n "$${priv_ip}" ] && break
+        sleep 2
+      done
+      if [ -z "$${priv_ip}" ]; then echo "private IP never came up on $${priv_if}" >&2; exit 1; fi
+
+      curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_VERSION="${k3s_version}" \
+        K3S_URL="https://${server_ip}:6443" \
+        K3S_TOKEN="${k3s_token}" \
+        INSTALL_K3S_EXEC="agent --node-ip $${priv_ip} --flannel-iface $${priv_if}" \
+        sh -
+runcmd:
+  - /usr/local/bin/install-k3s
