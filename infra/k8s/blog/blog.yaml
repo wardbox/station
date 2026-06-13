@@ -24,8 +24,8 @@ spec:
     spec:
       containers:
         - name: blog
-          image: ghcr.io/wardbox/station:latest
-          imagePullPolicy: Always
+          image: ghcr.io/wardbox/station@sha256:3d789dd975b8acefbc17baad6785a535e91bf6ea082682c1b44a62a6c1122450
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 8080
