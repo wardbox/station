@@ -30,6 +30,8 @@ once after OpenTofu creates the cluster; after that, Argo reconciles
 `infra/k8s` from `main`.
 
 ```bash
+# First trust the control-plane host key: either pre-provision ~/.ssh/known_hosts
+# or set SSH_HOST_KEY_SHA256 to the expected SHA256 fingerprint.
 infra/k8s/fetch-kubeconfig.sh 5.78.150.13
 export KUBECONFIG=$PWD/infra/tofu/kubeconfig.yaml
 kubectl apply --server-side -k infra/k8s/bootstrap/argocd
