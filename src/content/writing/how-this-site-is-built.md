@@ -11,7 +11,7 @@ draft: true
 
 This site is deliberately small: Markdown files in git, Astro at build time, static files at runtime.
 
-TODO: Describe the north star in your own words. Why this shape instead of a CMS, database, or app server?
+I just wanted a place where I could put small writings and showcase sites I build on one domain. It should feel more like building blocks than an app.
 
 ```text
 Markdown → Astro build → static dist/ → Caddy container → k3s → Traefik → web
@@ -27,13 +27,11 @@ src/content/builds/
 src/content/notes/
 ```
 
-TODO: Explain what you like about posting as a git push. Mention frontmatter, drafts, and calculated read time.
+This makes me focus on writing instead of all the other bits and I can write from within the same place I spend most of my time.
 
 ## Astro is the compiler
 
 Astro reads the content collections, validates frontmatter, renders Markdown, and emits static HTML.
-
-TODO: Walk through the important pieces:
 
 - `src/content.config.ts` validates posts.
 - `src/lib/content.ts` normalizes sections and paths.
