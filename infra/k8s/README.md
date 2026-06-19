@@ -13,7 +13,15 @@ Gandi LiveDNS:
 | A | `@` | `5.78.150.13` | apex site (`stationsystems.dev`) |
 | A | `*` | `5.78.150.13` | wildcard subdomains for future apps |
 
-Use the default TTL or `300` while wiring the front door.
+Authoritative DNS has moved to Cloudflare:
+
+```text
+adele.ns.cloudflare.com
+logan.ns.cloudflare.com
+```
+
+Keep the apex and wildcard A records DNS-only, not proxied, while Traefik and
+cert-manager own the public HTTPS edge.
 
 ## Argo CD bootstrap
 
@@ -49,15 +57,15 @@ cleanup, not needed for the static blog launch.
 ## Current ingress
 
 `blog/blog.yaml` routes only `Host: stationsystems.dev` to the blog workload.
-TLS is issued by cert-manager using the `letsencrypt-http01` ClusterIssuer in
-`cert-manager/issuer.yaml`. HTTP is redirected to HTTPS globally by the k3s
-Traefik `HelmChartConfig` in `traefik/https-redirect.yaml`.
+TLS uses the wildcard Secret issued by the `letsencrypt-dns01-cloudflare`
+ClusterIssuer in `cert-manager/issuer-cloudflare.yaml`. The Cloudflare API token
+Secret is created out-of-band in the `cert-manager` namespace and is not stored
+in git. HTTP is redirected to HTTPS globally by the k3s Traefik
+`HelmChartConfig` in `traefik/https-redirect.yaml`.
 
 On pushes to `main`, GitHub Actions builds and pushes the GHCR image, then
 commits the new image digest to `blog/blog.yaml`. Actions has no cluster
 credentials; Argo CD rolls out the committed digest.
 
-This is the first TLS cut for the apex. A wildcard certificate still needs a
-DNS-01 issuer once DNS provider automation is chosen. See
-`docs/launch/deferred-plumbing.md` for the exact remote-state and wildcard TLS
-next steps.
+The older `letsencrypt-http01` ClusterIssuer is left in place for now as a
+working fallback. New subdomains should use DNS-01/wildcard TLS.

@@ -3,4 +3,6 @@ kind: Kustomization
 resources:
   - blog/blog.yaml
   - cert-manager/issuer.yaml
+  - cert-manager/issuer-cloudflare.yaml
+  - cert-manager/wildcard-certificate.yaml
   - traefik/https-redirect.yaml
