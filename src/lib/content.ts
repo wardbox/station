@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 // The three sections, in display order.
@@ -22,12 +23,18 @@ export interface Post {
   entry: AnyEntry;
 }
 
-// Every post across all sections, newest first, drafts dropped in prod.
+const entryExists = (type: PostType, entry: AnyEntry) =>
+  existsSync(`src/content/${type}/${entry.id}`);
+
+// Every post across all sections, newest first, drafts and stale content-layer
+// rows dropped in prod. The file existence check keeps deleted Markdown from
+// leaking if Astro's content cache still has old rows locally or in CI cache.
 export async function getAllPosts(): Promise<Post[]> {
   const all: Post[] = [];
   for (const type of POST_TYPES) {
     const entries = await getCollection(type);
     for (const entry of entries) {
+      if (!entryExists(type, entry)) continue;
       if (import.meta.env.PROD && entry.data.draft) continue;
       all.push({ type, entry });
     }
@@ -36,7 +43,7 @@ export async function getAllPosts(): Promise<Post[]> {
   return all;
 }
 
-// The single latest post - the one the red featured bar spotlights.
+// The single latest post - the one the accent featured bar spotlights.
 export async function getLatest(): Promise<Post | undefined> {
   return (await getAllPosts())[0];
 }
@@ -53,7 +60,8 @@ export async function getSections(): Promise<
   }));
 }
 
-export const postPath = (p: Post) => `/${p.type}/${p.entry.id.replace(/\.md$/, '')}`;
+export const sectionPath = (type: PostType) => `/${type}/`;
+export const postPath = (p: Post) => `${sectionPath(p.type)}${p.entry.id.replace(/\.md$/, '')}`;
 
 // "08 Jun 2026" - post eyebrow; terse, unambiguous, no comma.
 const fmt = new Intl.DateTimeFormat('en-GB', {

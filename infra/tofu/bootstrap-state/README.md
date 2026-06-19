@@ -30,7 +30,7 @@ tofu apply
 
 ## Migrate the substrate state
 
-After apply, copy the output values into the commented backend block in
+After apply, confirm the output values match the backend block in
 `../versions.tf`, then from `infra/tofu` run:
 
 ```bash

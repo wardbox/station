@@ -6,7 +6,7 @@ import Telemetry from '../components/Telemetry.astro';
 import Topbar from '../components/Topbar.astro';
 import PostHeader from '../components/PostHeader.astro';
 import PostStats from '../components/PostStats.astro';
-import { type Post } from '../lib/content';
+import { sectionPath, type Post } from '../lib/content';
 
 interface Props {
   post: Post;
@@ -18,7 +18,7 @@ const { data } = post.entry;
 <Base title={data.title} description={data.summary}>
   <main class="field">
     <Telemetry />
-    <Topbar backHref={`/${post.type}`} backLabel={post.type} />
+    <Topbar backHref={sectionPath(post.type)} backLabel={post.type} />
 
     <article class="article">
       <PostHeader post={post} />

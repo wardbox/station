@@ -5,15 +5,15 @@ bootstrap below.
 
 ## DNS records
 
-The domain is registered at Gandi. Until DNS is automated, configure these in
-Gandi LiveDNS:
+The domain is registered at Gandi, but authoritative DNS is Cloudflare. Until
+DNS records are automated in Tofu, keep these records in Cloudflare DNS:
 
 | Type | Name | Value | Purpose |
 | --- | --- | --- | --- |
 | A | `@` | `5.78.150.13` | apex site (`stationsystems.dev`) |
 | A | `*` | `5.78.150.13` | wildcard subdomains for future apps |
 
-Authoritative DNS has moved to Cloudflare:
+Authoritative nameservers:
 
 ```text
 adele.ns.cloudflare.com
@@ -23,36 +23,36 @@ logan.ns.cloudflare.com
 Keep the apex and wildcard A records DNS-only, not proxied, while Traefik and
 cert-manager own the public HTTPS edge.
 
-## Argo CD bootstrap
+## Bootstrap
 
-Argo CD itself is bootstrapped once by hand; after that, it reconciles
+The bootstrap layer is tracked as manifests under `infra/k8s/bootstrap`. Apply it
+once after OpenTofu creates the cluster; after that, Argo reconciles
 `infra/k8s` from `main`.
 
 ```bash
+# First trust the control-plane host key: either pre-provision ~/.ssh/known_hosts
+# or set SSH_HOST_KEY_SHA256 to the expected SHA256 fingerprint.
+infra/k8s/fetch-kubeconfig.sh 5.78.150.13
 export KUBECONFIG=$PWD/infra/tofu/kubeconfig.yaml
-kubectl apply -f infra/k8s/argocd/namespace.yaml
-kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.4.4/manifests/install.yaml
+kubectl apply --server-side -k infra/k8s/bootstrap/argocd
+kubectl apply --server-side -k infra/k8s/bootstrap/cert-manager
 kubectl -n argocd rollout status deploy/argocd-server
+kubectl -n cert-manager rollout status deploy/cert-manager
+kubectl -n cert-manager rollout status deploy/cert-manager-webhook
+kubectl -n cert-manager rollout status deploy/cert-manager-cainjector
 kubectl apply -f infra/k8s/argocd/station-k8s-app.yaml
 kubectl -n argocd get application station-k8s
 ```
 
-Do not commit Argo admin passwords or generated Secrets.
+Do not commit Argo admin passwords, generated Secrets, or the Cloudflare API
+token Secret. The root Argo Application is tracked in git; controller-generated
+runtime state is not.
 
 ## cert-manager
 
-cert-manager was installed by hand before this GitOps cut:
-
-```bash
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.yaml
-kubectl -n cert-manager rollout status deploy/cert-manager
-kubectl -n cert-manager rollout status deploy/cert-manager-webhook
-kubectl -n cert-manager rollout status deploy/cert-manager-cainjector
-```
-
-The issuer is now included in `infra/k8s/kustomization.yaml`, so Argo keeps
-it reconciled. Installing cert-manager itself through Argo is a later bootstrap
-cleanup, not needed for the static blog launch.
+The cert-manager controller stack and CRDs are bootstrapped from
+`infra/k8s/bootstrap/cert-manager`. Issuers and Certificates are included in
+`infra/k8s/kustomization.yaml`, so Argo keeps those reconciled after bootstrap.
 
 ## Current ingress
 
