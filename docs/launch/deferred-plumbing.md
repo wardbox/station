@@ -1,18 +1,29 @@
-# Deferred launch plumbing
+# Launch plumbing notes
 
 ## OpenTofu remote state
 
-`infra/tofu/bootstrap-state` now contains a separate local-state bootstrap composition that creates the Hetzner Object Storage bucket and enables versioning through the MinIO provider. The main substrate state is intentionally not migrated in this PR because migration requires real Object Storage credentials and a reviewed state move.
+Remote state is active for the substrate composition in `infra/tofu`.
 
-Manual next step:
+`infra/tofu/bootstrap-state` is the separate local-state bootstrap composition that created the Hetzner Object Storage bucket and enabled versioning through the MinIO provider. The substrate backend now points at:
 
-1. Create Hetzner Object Storage S3 credentials out-of-band.
-2. Export them locally as `TF_VAR_object_storage_access_key` and `TF_VAR_object_storage_secret_key`.
-3. Copy `infra/tofu/bootstrap-state/terraform.tfvars.example` to a local `terraform.tfvars`, choose the bucket name/region/server, and do not commit it.
-4. From `infra/tofu/bootstrap-state`, run `tofu init`, `tofu plan`, and `tofu apply`.
-5. Copy the output bucket/endpoint values into the commented backend block in `infra/tofu/versions.tf`.
-6. From `infra/tofu`, run `tofu init -migrate-state` and confirm the migration only after reviewing the prompt.
-7. Verify with `tofu state list`; do not commit `.terraform/`, `.env`, state, tfvars, or kubeconfig.
+```text
+bucket: station-tofu-state
+key: substrate/terraform.tfstate
+endpoint: https://fsn1.your-objectstorage.com
+locking: native OpenTofu S3 lockfile
+```
+
+To use the migrated backend locally, source/export Object Storage credentials before running substrate Tofu commands:
+
+```bash
+export AWS_ACCESS_KEY_ID="..."
+export AWS_SECRET_ACCESS_KEY="..."
+cd infra/tofu
+tofu init
+tofu state list
+```
+
+If credentials are stored as `TF_VAR_object_storage_access_key` / `TF_VAR_object_storage_secret_key` for the bootstrap composition, map them to the backend env vars before running commands in `infra/tofu`. Do not commit `.terraform/`, `.env`, state, tfvars, kubeconfig, or local plan files.
 
 ## Wildcard TLS / Gandi DNS-01
 
