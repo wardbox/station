@@ -24,7 +24,8 @@ export interface Post {
 }
 
 const entryExists = (type: PostType, entry: AnyEntry) =>
-  existsSync(`src/content/${type}/${entry.id}`);
+  existsSync(`src/content/${type}/${entry.id}`) ||
+  existsSync(`src/content/${type}/${entry.id}.md`);
 
 // Every post across all sections, newest first, drafts and stale content-layer
 // rows dropped in prod. The file existence check keeps deleted Markdown from
