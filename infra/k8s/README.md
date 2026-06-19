@@ -31,7 +31,7 @@ Argo CD itself is bootstrapped once by hand; after that, it reconciles
 ```bash
 export KUBECONFIG=$PWD/infra/tofu/kubeconfig.yaml
 kubectl apply -f infra/k8s/argocd/namespace.yaml
-kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.4.4/manifests/install.yaml
 kubectl -n argocd rollout status deploy/argocd-server
 kubectl apply -f infra/k8s/argocd/station-k8s-app.yaml
 kubectl -n argocd get application station-k8s

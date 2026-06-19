@@ -22,6 +22,11 @@ variable "object_storage_server" {
   type        = string
   default     = "fsn1.your-objectstorage.com"
   nullable    = false
+
+  validation {
+    condition     = can(regex("^[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$", var.object_storage_server)) && !strcontains(var.object_storage_server, "://") && !strcontains(var.object_storage_server, "/")
+    error_message = "object_storage_server must be a host name only, without scheme or path (for example: fsn1.your-objectstorage.com)."
+  }
 }
 
 variable "object_storage_access_key" {
