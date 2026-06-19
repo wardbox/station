@@ -3,28 +3,27 @@
 // Numbers carry a faint unit - value in display weight, unit small + muted
 // (Principle 6, the score-screen XP treatment).
 import { type Post } from '../lib/content';
+import { postReadTime } from '../lib/readtime';
 
 interface Props {
   post: Post;
 }
 const { post } = Astro.props;
 const { data } = post.entry;
-const [rtValue, rtUnit] = (data.readtime ?? '').split(' ');
-const hasAny =
-  data.readtime || (data.stack?.length ?? 0) || (data.filed?.length ?? 0);
+const readtime = postReadTime(post);
+const [rtValue, rtUnit] = readtime.split(' ');
+const hasAny = readtime || (data.stack?.length ?? 0) || (data.filed?.length ?? 0);
 ---
 
 {
   hasAny && (
     <div class="stats">
-      {data.readtime && (
-        <div>
-          <div class="label">Read</div>
-          <div class="stat-val">
-            {rtValue} <span class="unit">{rtUnit ?? 'min'}</span>
-          </div>
+      <div>
+        <div class="label">Read</div>
+        <div class="stat-val">
+          {rtValue} <span class="unit">{rtUnit ?? 'min'}</span>
         </div>
-      )}
+      </div>
       {data.stack && data.stack.length > 0 && (
         <div>
           <div class="label">Stack</div>

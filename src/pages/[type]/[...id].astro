@@ -1,22 +1,16 @@
 ---
 // One route for every section. Maps /writing/…, /builds/…, /notes/… onto the
 // matching collection. New section files need no new routing - drop and push.
-import { getCollection, render } from 'astro:content';
-import { POST_TYPES, type Post } from '../../lib/content';
+import { render } from 'astro:content';
+import { getAllPosts, type Post } from '../../lib/content';
 import PostLayout from '../../layouts/Post.astro';
 
 export async function getStaticPaths() {
-  const paths = [];
-  for (const type of POST_TYPES) {
-    const entries = await getCollection(type);
-    for (const entry of entries) {
-      paths.push({
-        params: { type, id: entry.id.replace(/\.md$/, '') },
-        props: { post: { type, entry } satisfies Post },
-      });
-    }
-  }
-  return paths;
+  const posts = await getAllPosts();
+  return posts.map((post) => ({
+    params: { type: post.type, id: post.entry.id.replace(/\.md$/, '') },
+    props: { post },
+  }));
 }
 
 interface Props {

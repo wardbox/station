@@ -107,7 +107,7 @@ ol {
   font-family: var(--mono);
 }
 
-/* Live / now marker - the single green, genuine status only. */
+/* Live / now marker - the single cyan, genuine status only. */
 .dot {
   color: var(--live);
 }

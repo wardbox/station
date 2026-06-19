@@ -40,15 +40,15 @@ Frontmatter:
 title: Title in plain case
 date: 2026-06-08
 summary: One honest line under the title.
-readtime: 6 min        # optional
+readtime: 6 min        # optional override; otherwise calculated
 stack: [k3s, Traefik]  # optional - builds
 filed: [design]        # optional - filed-under
-live: false            # optional - true earns the single green status
+live: false            # optional - true earns the single live status
 draft: false           # optional - hidden in production builds
 ---
 ```
 
-The newest post across all sections is the one the red featured bar spotlights.
+The newest post across all sections is the one the accent featured bar spotlights.
 
 ## Container & CI
 

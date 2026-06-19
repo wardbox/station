@@ -13,7 +13,7 @@ const post = z.object({
   readtime: z.string().optional(), // e.g. "6 min"
   stack: z.array(z.string()).optional(), // builds: what it's made of
   filed: z.array(z.string()).optional(), // filed-under tags
-  // Genuine live/now status only - earns the single green (design Principle 2).
+  // Genuine live/now status only - earns the distinct status color.
   live: z.boolean().default(false),
   draft: z.boolean().default(false),
 });

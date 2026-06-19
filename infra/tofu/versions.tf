@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------
-# Tofu + provider version constraints, and (later) the remote state backend.
+# Tofu + provider version constraints and remote state backend.
 # --------------------------------------------------------------------------
 terraform {
   required_version = ">= 1.10.0"
@@ -24,6 +24,7 @@ terraform {
     bucket                      = "station-tofu-state"
     key                         = "substrate/terraform.tfstate"
     region                      = "us-east-1" # nominal; Hetzner ignores it
+    # Hetzner's real S3-compatible endpoint for the FSN1 Object Storage region.
     endpoints                   = { s3 = "https://fsn1.your-objectstorage.com" }
     use_lockfile                = true # native locking, no DynamoDB
     skip_credentials_validation = true

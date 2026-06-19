@@ -27,10 +27,10 @@ restraint + intelligence-agency precision.
    from precision and restraint, not from cosplay labels. Real ones don't stamp
    EYES ONLY on the homepage.
 
-2. **One accent, used once per region.** Red marks the single most important
-   thing in a given area (the latest post, the active tab) — never decoration.
-   The moment red appears twice in one view, it stops meaning anything. Green is
-   reserved for genuine live/now status.
+2. **One accent, used once per region.** The accent marks the single most
+   important thing in a given area (the latest post, the active tab) — never
+   decoration. The moment it appears twice in one view, it stops meaning
+   anything. Live/now status gets its own separate status color.
 
 3. **Weights stay restrained.** Medium, not black. The look reads refined
    because it resists shouting. If something needs emphasis, reach for scale,
@@ -70,8 +70,8 @@ hairline          #3a3f40
 text / primary    #eceae5
 text / label      #868c8a
 text / faint      #9aa09e   (dates, secondary readouts)
-accent / red      #e8112d   (featured + active only)
-accent / green    #5dd39e   (live / now only)
+accent            #1faa68   (featured + active only; current emerald cut)
+live / now         #34c0d4   (genuine status only; distinct from accent)
 ```
 
 ### Type
@@ -94,7 +94,7 @@ brief is fair game.
 ## Components (described by intent)
 
 - **Header.** Name, a plain location label, a one-line honest tagline. No seal.
-- **Featured bar.** The single red strip = the latest post. Functional spotlight.
+- **Featured bar.** The single accent strip = the latest post. Functional spotlight.
 - **Section index.** Columns by type (Writing / Builds / Notes). Each row: title
   left, date or live-status leader between. Counts in the tab.
 - **Status line.** A muted mono "now —" line (what you're actually working on)

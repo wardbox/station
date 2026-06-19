@@ -1,8 +1,14 @@
 ---
 // Columns by type. Each entry: title left, dotted leader, date or live status
-// right. No red here - the latest band owns the accent for this view; green
+// right. No accent here - the latest band owns the accent for this view; cyan
 // appears only for genuine live status.
-import { formatShort, postPath, type Post, type PostType } from '../lib/content';
+import {
+  formatShort,
+  postPath,
+  sectionPath,
+  type Post,
+  type PostType,
+} from '../lib/content';
 
 interface Props {
   sections: { type: PostType; label: string; posts: Post[] }[];
@@ -41,7 +47,7 @@ const { sections, limit } = Astro.props;
           <div class="entry empty mono">nothing filed yet</div>
         )}
         {hidden > 0 && (
-          <a class="more" href={`/${section.type}`}>
+          <a class="more" href={sectionPath(section.type)}>
             +{hidden} more <span class="more-arrow">&rarr;</span>
           </a>
         )}

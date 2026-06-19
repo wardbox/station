@@ -30,8 +30,8 @@ version, private-network flannel, firewalled SSH/API).
   Argo own everything inside the cluster. Keep k3s defaults (Traefik + ServiceLB
   + local-path); Hetzner CCM/CSI come later via Argo.
 - State: **Hetzner Object Storage** (EU-only — FSN1/NBG1/HEL1; fine, state has no
-  latency needs) via the S3 backend with `use_lockfile` native locking. Wired but
-  commented in `versions.tf` until the bucket exists.
+  latency needs) via the S3 backend with `use_lockfile` native locking. Wired in
+  `versions.tf`; `fsn1.your-objectstorage.com` is Hetzner's real FSN1 endpoint.
 
 **Pending:**
 - `modules/dns` — waiting on the domain decision.
