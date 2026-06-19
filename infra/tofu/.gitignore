@@ -24,3 +24,7 @@ override.tf.json
 
 # transient apply logs
 *.log
+
+# Local saved plans
+*.tfplan
+tfplan
