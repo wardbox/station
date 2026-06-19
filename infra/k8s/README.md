@@ -54,9 +54,36 @@ The cert-manager controller stack and CRDs are bootstrapped from
 `infra/k8s/bootstrap/cert-manager`. Issuers and Certificates are included in
 `infra/k8s/kustomization.yaml`, so Argo keeps those reconciled after bootstrap.
 
+## Argo CD access
+
+Argo CD is exposed at `https://argo.stationsystems.dev` through
+`argocd/exposure.yaml`, but it is intentionally gated before the request reaches
+Argo:
+
+- Traefik wildcard TLS using `stationsystems-dev-wildcard-tls` issued in the
+  `argocd` namespace.
+- Traefik Basic Auth backed by an out-of-band `argocd-basic-auth` Secret.
+- Argo CD's own login after the edge check passes.
+
+IP allowlisting is intentionally not done in Traefik here: with the current k3s
+ServiceLB path, Traefik does not reliably see the original client IP. If we want
+source-IP restriction later, put it in front of the cluster with Cloudflare
+Access/firewall rules or a VPN.
+
+Create/update the Basic Auth Secret out-of-band; do not commit credentials:
+
+```bash
+export KUBECONFIG=infra/tofu/kubeconfig.yaml
+htpasswd -nbB <user> '<password>' > /tmp/argocd.htpasswd
+kubectl -n argocd create secret generic argocd-basic-auth \
+  --from-file=users=/tmp/argocd.htpasswd \
+  --dry-run=client -o yaml | kubectl apply -f -
+rm -f /tmp/argocd.htpasswd
+```
+
 ## Current ingress
 
-`blog/blog.yaml` routes only `Host: stationsystems.dev` to the blog workload.
+`blog/blog.yaml` routes `Host: stationsystems.dev` to the blog workload.
 TLS uses the wildcard Secret issued by the `letsencrypt-dns01-cloudflare`
 ClusterIssuer in `cert-manager/issuer-cloudflare.yaml`. The Cloudflare API token
 Secret is created out-of-band in the `cert-manager` namespace and is not stored

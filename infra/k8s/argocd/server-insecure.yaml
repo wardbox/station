@@ -1,0 +1,12 @@
+# Public TLS terminates at Traefik. Inside the cluster, Traefik talks plain HTTP
+# to argocd-server on service port 80 to avoid self-signed backend TLS issues.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  server.insecure: "true"
