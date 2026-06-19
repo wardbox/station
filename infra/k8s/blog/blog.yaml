@@ -1,5 +1,4 @@
 # The blog workload — a featherweight static container behind Traefik.
-# Applied by hand for now; this becomes the first thing Argo CD manages (layer 2).
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -22,6 +21,7 @@ spec:
       labels:
         app: blog
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: blog
           image: ghcr.io/wardbox/station@sha256:3d789dd975b8acefbc17baad6785a535e91bf6ea082682c1b44a62a6c1122450
@@ -77,14 +77,12 @@ kind: Ingress
 metadata:
   name: blog
   namespace: blog
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-http01
 spec:
   ingressClassName: traefik
   tls:
     - hosts:
         - stationsystems.dev
-      secretName: blog-tls
+      secretName: stationsystems-dev-wildcard-tls
   rules:
     - host: stationsystems.dev
       http:
