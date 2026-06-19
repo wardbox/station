@@ -2,16 +2,17 @@
 
 ## OpenTofu remote state
 
-`infra/tofu/versions.tf` already contains a commented S3 backend shape for Hetzner Object Storage with native OpenTofu locking. It is intentionally not enabled in this PR because migrating state requires real bucket credentials and a state move.
+`infra/tofu/bootstrap-state` now contains a separate local-state bootstrap composition that creates the Hetzner Object Storage bucket and enables versioning through the MinIO provider. The main substrate state is intentionally not migrated in this PR because migration requires real Object Storage credentials and a reviewed state move.
 
 Manual next step:
 
-1. In Hetzner Object Storage, create a private bucket such as `station-tofu-state` in `fsn1`.
-2. Enable bucket versioning and keep server-side encryption on/default where available.
-3. Create S3 credentials for that bucket; export them locally as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` or source `infra/tofu/.env`.
-4. Uncomment and fill the backend block in `infra/tofu/versions.tf` with the real bucket name and endpoint.
-5. From `infra/tofu`, run `tofu init -migrate-state` and confirm the migration only after reviewing the prompt.
-6. Verify with `tofu state list`; do not commit `.terraform/`, `.env`, state, tfvars, or kubeconfig.
+1. Create Hetzner Object Storage S3 credentials out-of-band.
+2. Export them locally as `TF_VAR_object_storage_access_key` and `TF_VAR_object_storage_secret_key`.
+3. Copy `infra/tofu/bootstrap-state/terraform.tfvars.example` to a local `terraform.tfvars`, choose the bucket name/region/server, and do not commit it.
+4. From `infra/tofu/bootstrap-state`, run `tofu init`, `tofu plan`, and `tofu apply`.
+5. Copy the output bucket/endpoint values into the commented backend block in `infra/tofu/versions.tf`.
+6. From `infra/tofu`, run `tofu init -migrate-state` and confirm the migration only after reviewing the prompt.
+7. Verify with `tofu state list`; do not commit `.terraform/`, `.env`, state, tfvars, or kubeconfig.
 
 ## Wildcard TLS / Gandi DNS-01
 
