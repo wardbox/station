@@ -4,7 +4,7 @@ date: 2026-06-19
 summary: Markdown in git, Astro at build time, Caddy at runtime, and a small k3s cluster behind the door.
 stack: [Astro, Content Collections, Caddy, Docker, k3s, Traefik, cert-manager, Argo CD, OpenTofu]
 filed: [site, infra, gitops]
-draft: true
+draft: false
 ---
 
 ## The shape
