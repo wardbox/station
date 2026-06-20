@@ -59,6 +59,7 @@ html[data-pride='true'] .telemetry::after {
   width: 38px;
   height: 2px;
   flex: 0 0 auto;
+  margin-left: auto;
   background: linear-gradient(
     90deg,
     #e40303 0 16.66%,

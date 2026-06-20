@@ -6,6 +6,7 @@ resource "cloudflare_dns_record" "argo_private" {
   type    = "CNAME"
   content = var.argo_tailnet_target
   ttl     = 120
+  # Required: Cloudflare cannot proxy this external Tailscale MagicDNS target.
   proxied = false
   comment = "Private Argo CD over Tailscale MagicDNS"
 }

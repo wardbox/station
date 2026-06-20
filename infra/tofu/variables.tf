@@ -128,6 +128,11 @@ variable "cloudflare_zone_id" {
   type        = string
   default     = "9a24900325685100ac2892c16c770c7b"
   nullable    = false
+
+  validation {
+    condition     = can(regex("^[0-9a-f]{32}$", var.cloudflare_zone_id))
+    error_message = "cloudflare_zone_id must be a 32-character lowercase hexadecimal Cloudflare zone ID."
+  }
 }
 
 variable "argo_tailnet_target" {
@@ -135,4 +140,9 @@ variable "argo_tailnet_target" {
   type        = string
   default     = "argocd.tail157fe.ts.net"
   nullable    = false
+
+  validation {
+    condition     = can(regex("^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\\.ts\\.net$", var.argo_tailnet_target))
+    error_message = "argo_tailnet_target must be a lowercase Tailscale MagicDNS hostname ending in .ts.net."
+  }
 }
