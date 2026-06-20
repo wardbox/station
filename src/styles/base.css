@@ -54,22 +54,21 @@ ol {
   position: relative;
   z-index: 1;
 }
-html[data-pride='true'] .field::before {
+html[data-pride='true'] .telemetry::after {
   content: '';
-  position: absolute;
-  inset: -1px -1px auto;
+  width: 38px;
   height: 2px;
+  flex: 0 0 auto;
   background: linear-gradient(
     90deg,
-    #e40303,
-    #ff8c00,
-    #ffed00,
-    #008026,
-    #24408e,
-    #732982
+    #e40303 0 16.66%,
+    #ff8c00 16.66% 33.33%,
+    #ffed00 33.33% 50%,
+    #008026 50% 66.66%,
+    #24408e 66.66% 83.33%,
+    #732982 83.33% 100%
   );
-  opacity: 0.72;
-  pointer-events: none;
+  opacity: 0.62;
 }
 
 /* Backdrop: one quiet, desaturated photo behind the field, shown in the
