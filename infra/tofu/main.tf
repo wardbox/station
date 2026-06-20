@@ -39,3 +39,10 @@ module "cluster" {
   # The subnet must exist before a server can attach a private IP in it.
   depends_on = [module.network]
 }
+
+module "dns" {
+  source = "./modules/dns"
+
+  zone_id             = var.cloudflare_zone_id
+  argo_tailnet_target = var.argo_tailnet_target
+}

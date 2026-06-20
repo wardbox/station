@@ -54,6 +54,54 @@ The cert-manager controller stack and CRDs are bootstrapped from
 `infra/k8s/bootstrap/cert-manager`. Issuers and Certificates are included in
 `infra/k8s/kustomization.yaml`, so Argo keeps those reconciled after bootstrap.
 
+## Private admin access with Tailscale
+
+Admin surfaces should stay off the public internet. The Tailscale Kubernetes
+Operator is installed from `tailscale/operator.yaml` and exposes Argo CD through
+a tailnet-only LoadBalancer Service in `tailscale/argocd-service.yaml`.
+
+Expected access path:
+
+```text
+Tailscale device -> http://argo.stationsystems.dev -> argocd.tail157fe.ts.net -> argocd-server Service -> Argo CD login
+```
+
+DNS has an explicit Cloudflare DNS-only CNAME:
+
+```text
+argo.stationsystems.dev -> argocd.tail157fe.ts.net
+```
+
+Because the target only resolves inside the tailnet, the friendly domain works
+for Tailscale-connected devices without exposing Argo through public Traefik.
+
+`argocd/server-insecure.yaml` makes Argo serve HTTP for this private tailnet
+path. The traffic is still inside Tailscale's encrypted network, and Argo's own
+login remains required.
+
+Create the operator OAuth Secret out-of-band before syncing the operator; do not
+commit Tailscale credentials:
+
+```bash
+export KUBECONFIG=infra/tofu/kubeconfig.yaml
+kubectl -n tailscale create secret generic operator-oauth \
+  --from-literal=client_id="$TS_OAUTH_CLIENT_ID" \
+  --from-literal=client_secret="$TS_OAUTH_CLIENT_SECRET" \
+  --dry-run=client -o yaml | kubectl apply -f -
+```
+
+The OAuth client should be scoped for the Kubernetes operator and allowed to tag
+created devices with `tag:k8s-operator`. In Tailscale ACLs, make
+`tag:k8s-operator` an owner of `tag:k8s`, then grant access to `tag:k8s` only to
+the users/groups that should reach private admin services.
+
+This replaces the public-Argo-subdomain idea. If Argo needs browser access, use
+Tailscale/MagicDNS; keep `argo.stationsystems.dev` out of public Traefik.
+
+For future apps, use the exposure wrappers documented in `apps/README.md`: add a
+Tailscale LoadBalancer Service for private testing/admin access, or add a
+Traefik Ingress when intentionally promoting something to the public internet.
+
 ## Current ingress
 
 `blog/blog.yaml` routes only `Host: stationsystems.dev` to the blog workload.

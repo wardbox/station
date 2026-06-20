@@ -122,3 +122,27 @@ variable "admin_cidrs" {
     error_message = "Set at least one valid admin CIDR (e.g. [\"203.0.113.7/32\"]). Find yours: curl -s ifconfig.me"
   }
 }
+
+variable "cloudflare_zone_id" {
+  description = "Cloudflare zone ID for stationsystems.dev. Provider token comes from CLOUDFLARE_API_TOKEN."
+  type        = string
+  default     = "9a24900325685100ac2892c16c770c7b"
+  nullable    = false
+
+  validation {
+    condition     = can(regex("^[0-9a-f]{32}$", var.cloudflare_zone_id))
+    error_message = "cloudflare_zone_id must be a 32-character lowercase hexadecimal Cloudflare zone ID."
+  }
+}
+
+variable "argo_tailnet_target" {
+  description = "Tailscale MagicDNS target for the private Argo CD vanity CNAME."
+  type        = string
+  default     = "argocd.tail157fe.ts.net"
+  nullable    = false
+
+  validation {
+    condition     = can(regex("^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\\.ts\\.net$", var.argo_tailnet_target))
+    error_message = "argo_tailnet_target must be a lowercase Tailscale MagicDNS hostname ending in .ts.net."
+  }
+}

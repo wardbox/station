@@ -11,8 +11,8 @@ workload: a featherweight static site built from text files.
 
 - **[Astro](https://astro.build)** - static output, full control of the markup.
 - **Content Collections** - `src/content/{writing,builds,notes}/*.md`.
-- **Self-hosted fonts** (Fontsource) - Barlow Semi Condensed, Barlow, IBM Plex
-  Mono. No runtime font calls; the build stays hermetic.
+- **Self-hosted fonts** (Fontsource) - Barlow Semi Condensed, IBM Plex Sans,
+  IBM Plex Mono. No runtime font calls; the build stays hermetic.
 
 ## Develop
 
