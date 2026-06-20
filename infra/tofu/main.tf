@@ -43,6 +43,6 @@ module "cluster" {
 module "dns" {
   source = "./modules/dns"
 
-  zone_id             = var.cloudflare_zone_id
-  argo_tailnet_target = var.argo_tailnet_target
+  zone_id         = var.cloudflare_zone_id
+  argo_tailnet_ip = var.argo_tailnet_ip
 }

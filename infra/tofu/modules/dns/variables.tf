@@ -4,8 +4,8 @@ variable "zone_id" {
   nullable    = false
 }
 
-variable "argo_tailnet_target" {
-  description = "Tailscale MagicDNS target for argo.<zone>."
+variable "argo_tailnet_ip" {
+  description = "Tailscale IP for argo.<zone>."
   type        = string
   nullable    = false
 }

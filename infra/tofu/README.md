@@ -35,7 +35,7 @@ version, private-network flannel, firewalled SSH/API).
 
 **Pending:**
 - `modules/dns` — Cloudflare DNS for station hostnames. Currently manages the
-  `argo.stationsystems.dev` vanity CNAME to the Tailscale MagicDNS target.
+  `argo.stationsystems.dev` vanity A record to the Tailscale service IP.
 - First real `apply` — waiting on you (token + `terraform.tfvars` + Object Storage
   bucket if going remote-state-first).
 
@@ -54,7 +54,7 @@ not Tofu. This is the build spec's three-layer split, kept honest.
 - Servers: 1 control-plane node + 1–2 agent nodes (start small).
 - k3s itself, bootstrapped via cloud-init on first boot.
 - DNS: selected Cloudflare records for `stationsystems.dev`, including private
-  vanity names that point at Tailscale MagicDNS.
+  vanity names that point at Tailscale service IPs.
 - Outputs: the kubeconfig and the entry-point IP, for layer 2 to consume.
 
 **Tofu does NOT provision (these are Argo's job, layer 2):**
