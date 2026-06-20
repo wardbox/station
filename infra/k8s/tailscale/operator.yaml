@@ -14,5 +14,6 @@ spec:
   valuesContent: |-
     operatorConfig:
       hostname: station-k8s-operator
+      defaultTags: "tag:k8s-operator"
     proxyConfig:
       defaultTags: "tag:k8s"

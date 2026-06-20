@@ -82,11 +82,16 @@ kubectl -n tailscale create secret generic operator-oauth \
 ```
 
 The OAuth client should be scoped for the Kubernetes operator and allowed to tag
-created devices with `tag:k8s`. In Tailscale ACLs, grant access to that tag only
-to the users/groups that should reach private admin services.
+created devices with `tag:k8s-operator`. In Tailscale ACLs, make
+`tag:k8s-operator` an owner of `tag:k8s`, then grant access to `tag:k8s` only to
+the users/groups that should reach private admin services.
 
 This replaces the public-Argo-subdomain idea. If Argo needs browser access, use
 Tailscale/MagicDNS; keep `argo.stationsystems.dev` out of public Traefik.
+
+For future apps, use the exposure wrappers documented in `apps/README.md`: add a
+Tailscale LoadBalancer Service for private testing/admin access, or add a
+Traefik Ingress when intentionally promoting something to the public internet.
 
 ## Current ingress
 
