@@ -2,7 +2,6 @@
 title: How this site is built
 date: 2026-06-19
 summary: Markdown in git, Astro at build time, Caddy at runtime, and a small k3s cluster behind the door.
-stack: [Astro, Content Collections, Caddy, Docker, k3s, Traefik, cert-manager, Argo CD, OpenTofu]
 filed: [site, infra, gitops]
 draft: false
 ---
@@ -59,7 +58,7 @@ For TLS, cert-manager gets a certificate from Let's Encrypt using DNS-01. Cloudf
 
 Traefik is exposed by k3s ServiceLB, comes by default with k3s.
 
-And then DNS points the domain to the node IP with an A record — technically two, one for the apex and one for the wildcard.
+And then DNS points the domain to the node IP with an A record, technically two, one for the apex and one for the wildcard.
 
 ```text
 stationsystems.dev → Traefik/TLS → Ingress → Service → Caddy pod
