@@ -135,14 +135,14 @@ variable "cloudflare_zone_id" {
   }
 }
 
-variable "argo_tailnet_target" {
-  description = "Tailscale MagicDNS target for the private Argo CD vanity CNAME."
+variable "argo_tailnet_ip" {
+  description = "Tailscale IP for the private Argo CD vanity A record."
   type        = string
-  default     = "argocd.tail157fe.ts.net"
+  default     = "100.98.174.23"
   nullable    = false
 
   validation {
-    condition     = can(regex("^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\\.ts\\.net$", var.argo_tailnet_target))
-    error_message = "argo_tailnet_target must be a lowercase Tailscale MagicDNS hostname ending in .ts.net."
+    condition     = can(cidrhost("${var.argo_tailnet_ip}/32", 0)) && cidrcontains("100.64.0.0/10", var.argo_tailnet_ip)
+    error_message = "argo_tailnet_ip must be a valid Tailscale IPv4 address in 100.64.0.0/10."
   }
 }

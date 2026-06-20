@@ -25,9 +25,9 @@ terraform {
   # creds come from AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY in the environment.
   #
   backend "s3" {
-    bucket                      = "station-tofu-state"
-    key                         = "substrate/terraform.tfstate"
-    region                      = "us-east-1" # nominal; Hetzner ignores it
+    bucket = "station-tofu-state"
+    key    = "substrate/terraform.tfstate"
+    region = "us-east-1" # nominal; Hetzner ignores it
     # Hetzner's real S3-compatible endpoint for the FSN1 Object Storage region.
     endpoints                   = { s3 = "https://fsn1.your-objectstorage.com" }
     use_lockfile                = true # native locking, no DynamoDB
