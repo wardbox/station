@@ -63,8 +63,17 @@ a tailnet-only LoadBalancer Service in `tailscale/argocd-service.yaml`.
 Expected access path:
 
 ```text
-Tailscale device -> http://argocd / MagicDNS -> argocd-server Service -> Argo CD login
+Tailscale device -> http://argo.stationsystems.dev -> argocd.tail157fe.ts.net -> argocd-server Service -> Argo CD login
 ```
+
+DNS has an explicit Cloudflare DNS-only CNAME:
+
+```text
+argo.stationsystems.dev -> argocd.tail157fe.ts.net
+```
+
+Because the target only resolves inside the tailnet, the friendly domain works
+for Tailscale-connected devices without exposing Argo through public Traefik.
 
 `argocd/server-insecure.yaml` makes Argo serve HTTP for this private tailnet
 path. The traffic is still inside Tailscale's encrypted network, and Argo's own
