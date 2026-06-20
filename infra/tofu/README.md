@@ -34,7 +34,8 @@ version, private-network flannel, firewalled SSH/API).
   `versions.tf`; `fsn1.your-objectstorage.com` is Hetzner's real FSN1 endpoint.
 
 **Pending:**
-- `modules/dns` — waiting on the domain decision.
+- `modules/dns` — Cloudflare DNS for station hostnames. Currently manages the
+  `argo.stationsystems.dev` vanity CNAME to the Tailscale MagicDNS target.
 - First real `apply` — waiting on you (token + `terraform.tfvars` + Object Storage
   bucket if going remote-state-first).
 
@@ -52,7 +53,8 @@ not Tofu. This is the build spec's three-layer split, kept honest.
   placement group.
 - Servers: 1 control-plane node + 1–2 agent nodes (start small).
 - k3s itself, bootstrapped via cloud-init on first boot.
-- DNS: the wildcard `*.stationsystems.dev` record pointing at the entry point.
+- DNS: selected Cloudflare records for `stationsystems.dev`, including private
+  vanity names that point at Tailscale MagicDNS.
 - Outputs: the kubeconfig and the entry-point IP, for layer 2 to consume.
 
 **Tofu does NOT provision (these are Argo's job, layer 2):**

@@ -122,3 +122,17 @@ variable "admin_cidrs" {
     error_message = "Set at least one valid admin CIDR (e.g. [\"203.0.113.7/32\"]). Find yours: curl -s ifconfig.me"
   }
 }
+
+variable "cloudflare_zone_id" {
+  description = "Cloudflare zone ID for stationsystems.dev. Provider token comes from CLOUDFLARE_API_TOKEN."
+  type        = string
+  default     = "9a24900325685100ac2892c16c770c7b"
+  nullable    = false
+}
+
+variable "argo_tailnet_target" {
+  description = "Tailscale MagicDNS target for the private Argo CD vanity CNAME."
+  type        = string
+  default     = "argocd.tail157fe.ts.net"
+  nullable    = false
+}

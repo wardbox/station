@@ -54,6 +54,23 @@ ol {
   position: relative;
   z-index: 1;
 }
+html[data-pride='true'] .field::before {
+  content: '';
+  position: absolute;
+  inset: -1px -1px auto;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #e40303,
+    #ff8c00,
+    #ffed00,
+    #008026,
+    #24408e,
+    #732982
+  );
+  opacity: 0.72;
+  pointer-events: none;
+}
 
 /* Backdrop: one quiet, desaturated photo behind the field, shown in the
    margins around it. Off by default - set --backdrop-image in tokens.css. */

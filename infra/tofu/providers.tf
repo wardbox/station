@@ -8,3 +8,6 @@ provider "hcloud" {
 }
 
 provider "random" {}
+
+# Reads token from CLOUDFLARE_API_TOKEN. Do not put DNS credentials in tfvars.
+provider "cloudflare" {}
