@@ -15,6 +15,14 @@
 	@health path /healthz
 	respond @health "ok" 200
 
+	# Katana's public page lives in the same static image, but presents as its own
+	# place at katana.stationsystems.dev.
+	@katana_root {
+		host katana.stationsystems.dev
+		path /
+	}
+	rewrite @katana_root /katana/index.html
+
 	# Block known AI training/scraping bots. This is best-effort: honest bots are
 	# stopped here; dishonest bots can lie about their user agent.
 	@ai_bots header_regexp User-Agent "(?i)(GPTBot|ChatGPT-User|ClaudeBot|Claude-User|anthropic-ai|Google-Extended|PerplexityBot|CCBot|Bytespider|Amazonbot|Applebot-Extended|Meta-ExternalAgent|Meta-ExternalFetcher|FacebookBot|Diffbot|ImagesiftBot|Omgilibot|Omgili|YouBot|cohere-ai|AI2Bot|Kangaroo Bot|Scrapy|PetalBot)"
