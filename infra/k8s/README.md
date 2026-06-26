@@ -63,7 +63,7 @@ a tailnet-only LoadBalancer Service in `tailscale/argocd-service.yaml`.
 Expected access path:
 
 ```text
-Tailscale device -> http://argo.stationsystems.dev -> Tailscale service IP -> argocd-server Service -> Argo CD login
+Tailscale device -> https://argo.stationsystems.dev -> Tailscale service IP -> argocd-server Service -> Argo CD login
 ```
 
 DNS has an explicit Cloudflare DNS-only A record:
@@ -75,9 +75,9 @@ argo.stationsystems.dev -> 100.98.174.23
 Because `100.64.0.0/10` is Tailscale CGNAT space, the friendly domain works for
 Tailscale-connected devices without exposing Argo through public Traefik.
 
-`argocd/server-insecure.yaml` makes Argo serve HTTP for this private tailnet
-path. The traffic is still inside Tailscale's encrypted network, and Argo's own
-login remains required.
+`argocd/server-tls.yaml` makes Argo serve HTTPS for this private tailnet
+path using the `argocd-server-tls` cert-manager Secret. Argo's own login
+remains required.
 
 Create the operator OAuth Secret out-of-band before syncing the operator; do not
 commit Tailscale credentials:
