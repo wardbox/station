@@ -20,7 +20,7 @@ const { data } = post.entry;
     <Telemetry />
     <Topbar backHref={sectionPath(post.type)} backLabel={post.type} />
 
-    <article class="article">
+    <article class="px-[var(--pad-x)] pb-9 pt-[30px]">
       <PostHeader post={post} />
       <div class="prose">
         <slot />
@@ -47,17 +47,11 @@ const { data } = post.entry;
   }
 </script>
 
-<style>
-  .article {
-    padding: 30px var(--pad-x) 36px;
-  }
-</style>
-
 <style is:global>
   /* Restrained prose - a curated set of elements, no markdown soup. The reading
      column carries the writing and nothing competes with it (Principle 7). */
   .prose {
-    max-width: 60ch;
+    width: 100%;
     font-size: 16px;
     line-height: 1.72;
     color: var(--text);

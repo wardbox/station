@@ -1,7 +1,5 @@
 ---
 // The thin stat row beneath the prose: read time / stack / filed-under.
-// Numbers carry a faint unit - value in display weight, unit small + muted
-// (Principle 6, the score-screen XP treatment).
 import { type Post } from '../lib/content';
 import { postReadTime } from '../lib/readtime';
 
@@ -17,51 +15,25 @@ const hasAny = readtime || (data.stack?.length ?? 0) || (data.filed?.length ?? 0
 
 {
   hasAny && (
-    <div class="stats">
+    <div class="mt-[26px] flex flex-wrap gap-8 border-t border-hairline pt-3.5">
       <div>
-        <div class="label">Read</div>
-        <div class="stat-val">
-          {rtValue} <span class="unit">{rtUnit ?? 'min'}</span>
+        <div class="label mb-1">Read</div>
+        <div class="font-display text-lg font-medium text-text">
+          {rtValue} <span class="text-[11px] uppercase tracking-[var(--track-label)] text-label">{rtUnit ?? 'min'}</span>
         </div>
       </div>
       {data.stack && data.stack.length > 0 && (
         <div>
-          <div class="label">Stack</div>
-          <div class="stat-val">{data.stack.join(' · ')}</div>
+          <div class="label mb-1">Stack</div>
+          <div class="font-display text-lg font-medium text-text">{data.stack.join(' · ')}</div>
         </div>
       )}
       {data.filed && data.filed.length > 0 && (
         <div>
-          <div class="label">Filed under</div>
-          <div class="stat-val">{data.filed.join(' · ')}</div>
+          <div class="label mb-1">Filed under</div>
+          <div class="font-display text-lg font-medium text-text">{data.filed.join(' · ')}</div>
         </div>
       )}
     </div>
   )
 }
-
-<style>
-  .stats {
-    display: flex;
-    gap: 32px;
-    flex-wrap: wrap;
-    margin-top: 26px;
-    border-top: 1px solid var(--hairline);
-    padding-top: 14px;
-  }
-  .label {
-    margin-bottom: 4px;
-  }
-  .stat-val {
-    font-family: var(--display);
-    font-weight: var(--weight-medium);
-    font-size: 18px;
-    color: var(--text);
-  }
-  .unit {
-    font-size: 11px;
-    letter-spacing: var(--track-label);
-    text-transform: uppercase;
-    color: var(--label);
-  }
-</style>

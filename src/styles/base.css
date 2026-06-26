@@ -1,13 +1,28 @@
-/* Reset - minimal, just enough to stop the browser arguing. */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import "tailwindcss";
+
+@theme inline {
+  --font-display: var(--display);
+  --font-body: var(--body);
+  --font-mono: var(--mono);
+  --color-outer: var(--outer);
+  --color-field: var(--field);
+  --color-border: var(--border);
+  --color-hairline: var(--hairline);
+  --color-dim: var(--dim);
+  --color-text: var(--text);
+  --color-label: var(--label);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-tint: var(--accent-tint);
+  --color-on-accent: var(--on-accent);
+  --color-live: var(--live);
+  --color-lead-dot: var(--lead-dot);
+  --color-text-bright: var(--text-bright);
+  --color-text-muted: var(--text-muted);
+  --color-count-active: var(--count-active);
 }
-* {
-  margin: 0;
-  padding: 0;
-}
+
+/* Tailwind Preflight owns the reset. Keep only site-specific base rules. */
 html {
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
@@ -54,23 +69,6 @@ ol {
   border: 1px solid var(--border);
   position: relative;
   z-index: 1;
-}
-html[data-pride='true'] .telemetry::after {
-  content: '';
-  width: 38px;
-  height: 2px;
-  flex: 0 0 auto;
-  margin-left: auto;
-  background: linear-gradient(
-    90deg,
-    #e40303 0 16.66%,
-    #ff8c00 16.66% 33.33%,
-    #ffed00 33.33% 50%,
-    #008026 50% 66.66%,
-    #24408e 66.66% 83.33%,
-    #732982 83.33% 100%
-  );
-  opacity: 0.62;
 }
 
 /* Backdrop: one quiet, desaturated photo behind the field, shown in the

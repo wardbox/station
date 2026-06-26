@@ -4,14 +4,14 @@
 import { site } from '../lib/site';
 ---
 
-<div class="status">
-  <div class="now">
-    <span class="dot" aria-hidden="true">&#9679;</span> now: {site.now}
+<div class="mt-6 flex items-center justify-between gap-3.5 border-t border-hairline pt-3.5 max-[560px]:flex-col max-[560px]:items-start max-[560px]:gap-3">
+  <div class="font-mono text-[10px] tracking-[0.05em] text-faint">
+    <span class="text-live" aria-hidden="true">&#9679;</span> now: {site.now}
   </div>
-  <div class="keys" aria-label="Keyboard hints">
+  <div class="flex items-center gap-3" aria-label="Keyboard hints">
     {
       site.keys.map((k) => (
-        <span class="key">
+        <span class="inline-flex items-center gap-1.5">
           <span class="kc">{k.kc}</span>
           <span class="label">{k.label}</span>
         </span>
@@ -19,38 +19,3 @@ import { site } from '../lib/site';
     }
   </div>
 </div>
-
-<style>
-  .status {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    margin-top: 24px;
-    border-top: 1px solid var(--hairline);
-    padding-top: 14px;
-  }
-  .now {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.05em;
-    color: var(--faint);
-  }
-  .keys {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  .key {
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-  }
-  @media (max-width: 560px) {
-    .status {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-  }
-</style>

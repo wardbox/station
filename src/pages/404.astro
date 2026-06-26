@@ -8,49 +8,15 @@ import Topbar from '../components/Topbar.astro';
   <main class="field">
     <Telemetry />
     <Topbar />
-    <div class="body">
-      <p class="label code">404 &middot; not found</p>
-      <h1 class="title">nothing&rsquo;s filed here.</h1>
-      <p class="lede">
-        that page doesn&rsquo;t exist, or never did. The index has
-        everything that does.
+    <div class="px-[var(--pad-x)] pb-12 pt-10">
+      <p class="label mb-2.5 text-[#cfd2d0]">404 &middot; not found</p>
+      <h1 class="mb-3 font-display text-[34px] font-medium leading-[1.05] tracking-[0.01em]">
+        nothing&rsquo;s filed here.
+      </h1>
+      <p class="mb-6 max-w-[46ch] text-faint">
+        that page doesn&rsquo;t exist, or never did. The index has everything that does.
       </p>
-      <a class="home" href="/"><span class="arrow">&larr;</span> back to index</a>
+      <a class="font-mono text-xs tracking-[0.05em] text-faint hover:text-text" href="/"><span class="text-accent">&larr;</span> back to index</a>
     </div>
   </main>
 </Base>
-
-<style>
-  .body {
-    padding: 40px var(--pad-x) 48px;
-  }
-  .code {
-    color: #cfd2d0;
-    margin-bottom: 10px;
-  }
-  .title {
-    font-family: var(--display);
-    font-weight: var(--weight-medium);
-    font-size: 34px;
-    line-height: 1.05;
-    letter-spacing: 0.01em;
-    margin-bottom: 12px;
-  }
-  .lede {
-    color: var(--faint);
-    max-width: 46ch;
-    margin-bottom: 24px;
-  }
-  .home {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    color: var(--faint);
-  }
-  .home:hover {
-    color: var(--text);
-  }
-  .home .arrow {
-    color: var(--accent);
-  }
-</style>

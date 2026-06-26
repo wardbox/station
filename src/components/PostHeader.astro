@@ -10,27 +10,9 @@ const { post } = Astro.props;
 const { data } = post.entry;
 ---
 
-<div class="label eyebrow">
+<div class="label mb-2 text-label">
   {TYPE_LABEL[post.type]} &middot; {formatDate(data.date)}
 </div>
-<h1 class="title">{data.title}</h1>
-
-<style>
-  .eyebrow {
-    color: var(--label);
-    margin-bottom: 8px;
-  }
-  .title {
-    font-family: var(--display);
-    font-weight: var(--weight-medium);
-    font-size: clamp(42px, 6vw, 58px);
-    line-height: 0.98;
-    letter-spacing: -0.01em;
-    margin-bottom: 34px;
-  }
-  @media (max-width: 560px) {
-    .title {
-      font-size: 38px;
-    }
-  }
-</style>
+<h1 class="mb-[34px] font-display text-[clamp(42px,6vw,58px)] font-medium leading-[0.98] tracking-[-0.01em] max-[560px]:text-[38px]">
+  {data.title}
+</h1>
