@@ -5,3 +5,8 @@ resources:
   - namespace.yaml
   # Argo CD controller stack. Pinned to the version documented for this cluster.
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.4.4/manifests/install.yaml
+patches:
+  - path: server-tls-patch.yaml
+    target:
+      kind: ConfigMap
+      name: argocd-cmd-params-cm
