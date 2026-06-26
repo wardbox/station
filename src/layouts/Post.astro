@@ -65,19 +65,32 @@ const { data } = post.entry;
   .prose > * + * {
     margin-top: 1.1em;
   }
-  .prose h2,
+  .prose h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--body);
+    font-size: 10.5px;
+    font-weight: var(--weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--track-label);
+    color: var(--label);
+    line-height: 1.2;
+    margin-top: 2.8em;
+  }
+  .prose h2::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    background: var(--hairline);
+  }
   .prose h3 {
     font-family: var(--display);
     font-weight: var(--weight-medium);
     color: var(--text);
     line-height: 1.15;
     margin-top: 1.6em;
-  }
-  .prose h2 {
-    font-size: 24px;
-  }
-  .prose h3 {
-    font-size: 19px;
+    font-size: 21px;
   }
   .prose a {
     color: var(--text);

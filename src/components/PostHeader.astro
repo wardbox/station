@@ -23,14 +23,14 @@ const { data } = post.entry;
   .title {
     font-family: var(--display);
     font-weight: var(--weight-medium);
-    font-size: 34px;
-    line-height: 1.05;
-    letter-spacing: 0.01em;
-    margin-bottom: 18px;
+    font-size: clamp(42px, 6vw, 58px);
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    margin-bottom: 34px;
   }
   @media (max-width: 560px) {
     .title {
-      font-size: 27px;
+      font-size: 38px;
     }
   }
 </style>

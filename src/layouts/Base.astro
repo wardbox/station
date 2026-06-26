@@ -3,7 +3,6 @@
 // and the field stays confidential-feeling.
 import '@fontsource/ibm-plex-sans/400.css';
 import '@fontsource/ibm-plex-sans/500.css';
-import '@fontsource/barlow-semi-condensed/500.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
@@ -12,11 +11,10 @@ import { site } from '../lib/site';
 // Preload the latin woff2 used above the fold so they're fetched before first
 // paint - kills the flash of fallback text swapping to our faces. These resolve
 // to the same hashed URLs the @font-face src points at, so the preload is used.
-import displayFont from '@fontsource/barlow-semi-condensed/files/barlow-semi-condensed-latin-500-normal.woff2';
 import bodyFont from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2';
 import bodyMediumFont from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-500-normal.woff2';
 import monoFont from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2';
-const preloadFonts = [displayFont, bodyFont, bodyMediumFont, monoFont];
+const preloadFonts = [bodyFont, bodyMediumFont, monoFont];
 
 interface Props {
   title?: string;
