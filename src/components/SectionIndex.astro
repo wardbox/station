@@ -1,7 +1,7 @@
 ---
 // Columns by type. Each entry: title left, dotted leader, date or live status
-// right. No accent here - the latest band owns the accent for this view; cyan
-// appears only for genuine live status.
+// right. Accent stays reserved for active/featured states; cyan appears only
+// for genuine live status.
 import {
   formatShort,
   postPath,
@@ -18,7 +18,7 @@ interface Props {
 const { sections, limit } = Astro.props;
 ---
 
-<div class="cols">
+<div class="grid grid-cols-1 gap-8">
   {
     sections.map((section) => {
       const shown =
@@ -26,16 +26,16 @@ const { sections, limit } = Astro.props;
       const hidden = section.posts.length - shown.length;
       return (
       <section class="col" data-section={section.type}>
-        <div class="label section-label">{section.label}</div>
+        <div class="label mb-2 border-b border-hairline pb-2 text-label">{section.label}</div>
         {shown.map((post) => (
-          <a class="entry" href={postPath(post)}>
-            <span class="entry-title">{post.entry.data.title}</span>
-            <span class="lead" aria-hidden="true" />
+          <a class="group flex items-baseline py-1.5 text-sm" href={postPath(post)}>
+            <span class="text-text transition-colors group-hover:text-text-bright group-focus-visible:text-text-bright">{post.entry.data.title}</span>
+            <span class="mx-2 flex-1 -translate-y-1 border-b border-dotted border-lead-dot" aria-hidden="true" />
             {post.entry.data.live ? (
-              <span class="stat live">LIVE</span>
+              <span class="font-mono text-xs tracking-wide text-live">LIVE</span>
             ) : (
               <time
-                class="entry-date"
+                class="whitespace-nowrap font-mono text-xs text-faint"
                 datetime={post.entry.data.date.toISOString()}
               >
                 {formatShort(post.entry.data.date)}
@@ -44,11 +44,11 @@ const { sections, limit } = Astro.props;
           </a>
         ))}
         {section.posts.length === 0 && (
-          <div class="entry empty mono">nothing filed yet</div>
+          <div class="flex items-baseline py-1.5 font-mono text-xs text-label">nothing filed yet</div>
         )}
         {hidden > 0 && (
-          <a class="more" href={sectionPath(section.type)}>
-            +{hidden} more <span class="more-arrow">&rarr;</span>
+          <a class="mt-2 inline-block font-mono text-xs tracking-wide text-faint hover:text-text" href={sectionPath(section.type)}>
+            +{hidden} more <span class="text-accent">&rarr;</span>
           </a>
         )}
       </section>
@@ -56,70 +56,3 @@ const { sections, limit } = Astro.props;
     })
   }
 </div>
-
-<style>
-  .cols {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 26px;
-  }
-  .section-label {
-    border-bottom: 1px solid var(--hairline);
-    padding-bottom: 6px;
-    margin-bottom: 8px;
-    color: var(--label);
-  }
-  .entry {
-    display: flex;
-    align-items: baseline;
-    padding: 6px 0;
-    font-size: 14px;
-  }
-  .entry-title {
-    color: var(--text);
-    transition: color 0.14s ease;
-  }
-  .entry:hover .entry-title,
-  .entry:focus-visible .entry-title {
-    color: var(--text-bright);
-  }
-  .lead {
-    flex: 1;
-    border-bottom: 1px dotted var(--lead-dot);
-    margin: 0 8px;
-    transform: translateY(-3px);
-  }
-  .entry-date {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--faint);
-    white-space: nowrap;
-  }
-  .stat {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: var(--track-mono);
-  }
-  .stat.live {
-    color: var(--live);
-  }
-  .empty {
-    color: var(--label);
-    font-size: 11px;
-  }
-  .more {
-    display: inline-block;
-    margin-top: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: var(--track-mono);
-    color: var(--faint);
-  }
-  .more:hover {
-    color: var(--text);
-  }
-  .more-arrow {
-    color: var(--accent);
-  }
-
-</style>

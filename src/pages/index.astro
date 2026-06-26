@@ -2,13 +2,11 @@
 import Base from '../layouts/Base.astro';
 import Telemetry from '../components/Telemetry.astro';
 import Header from '../components/Header.astro';
-import Latest from '../components/Latest.astro';
 import Tabs from '../components/Tabs.astro';
 import SectionIndex from '../components/SectionIndex.astro';
 import StatusLine from '../components/StatusLine.astro';
-import { getLatest, getSections } from '../lib/content';
+import { getSections } from '../lib/content';
 
-const latest = await getLatest();
 const sections = await getSections();
 ---
 
@@ -16,20 +14,13 @@ const sections = await getSections();
   <main class="field">
     <Telemetry />
     <Header />
-    {latest && <Latest post={latest} />}
-    <div class="body">
+    <div class="px-6 pb-6 pt-0">
       <Tabs sections={sections} />
       <SectionIndex sections={sections} limit={3} />
       <StatusLine />
     </div>
   </main>
 </Base>
-
-<style>
-  .body {
-    padding: 18px var(--pad-x) 24px;
-  }
-</style>
 
 <script>
   // Real section filters - clicking a tab shows only that section. Default is

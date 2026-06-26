@@ -1,7 +1,6 @@
 ---
 // Edge chrome shared by post + section pages. The back link points to the
-// natural parent (a post's section, a section's index); the wordmark always
-// goes home. So from a post you can step back to its section OR to the index.
+// natural parent; the wordmark always goes home.
 import { site } from '../lib/site';
 
 interface Props {
@@ -11,37 +10,9 @@ interface Props {
 const { backHref = '/', backLabel = 'index' } = Astro.props;
 ---
 
-<div class="topbar">
-  <a class="back" href={backHref}
-    ><span class="arrow">&larr;</span> <span class="back-label">{backLabel}</span></a
+<div class="flex items-center justify-between border-b border-hairline px-[var(--pad-x)] py-4">
+  <a class="back font-mono text-[11px] tracking-[0.05em] text-faint hover:text-text" href={backHref}
+    ><span class="text-accent">&larr;</span> <span class="back-label">{backLabel}</span></a
   >
-  <a class="wordmark" href="/">{site.name}</a>
+  <a class="font-display text-base font-medium tracking-[0.01em]" href="/">{site.name}</a>
 </div>
-
-<style>
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px var(--pad-x);
-    border-bottom: 1px solid var(--hairline);
-  }
-  .back {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--faint);
-  }
-  .back:hover {
-    color: var(--text);
-  }
-  .back .arrow {
-    color: var(--accent);
-  }
-  .wordmark {
-    font-family: var(--display);
-    font-weight: var(--weight-medium);
-    font-size: 16px;
-    letter-spacing: 0.01em;
-  }
-</style>

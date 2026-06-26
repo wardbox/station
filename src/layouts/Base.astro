@@ -60,14 +60,55 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
   </head>
   <body>
     <div class="backdrop" aria-hidden="true"></div>
+    <slot />
     <script is:inline>
-      // Subtle Pride month marker. Runtime-gated so it appears every June and
-      // disappears the rest of the year without needing a rebuild.
-      if (new Date().getMonth() === 5) {
-        document.documentElement.dataset.pride = 'true';
+      // Cause/date insignia. Runtime-gated so the static build ages through the
+      // year without rebuilds or external calls. Overlapping windows stack, so
+      // month-long observances and specific days can coexist.
+      const toDayOfYear = (mmdd) => {
+        const [month, day] = mmdd.split('-').map(Number);
+        return Date.UTC(2000, month - 1, day) / 86400000;
+      };
+      const today = new Date();
+      const dayOfYear = Date.UTC(2000, today.getMonth(), today.getDate()) / 86400000;
+      const previewAll = new URLSearchParams(window.location.search).get('insignia-preview') === 'all';
+      const isOrdinalWeekday = ({ month, weekday, ordinal }) => {
+        if (today.getMonth() + 1 !== month || today.getDay() !== weekday) return false;
+        return Math.floor((today.getDate() - 1) / 7) + 1 === ordinal;
+      };
+      const inWindow = ({ start, end, weekdayOrdinal }) => {
+        if (weekdayOrdinal) return isOrdinalWeekday(weekdayOrdinal);
+        const startDay = toDayOfYear(start);
+        const endDay = toDayOfYear(end);
+        return startDay <= endDay
+          ? dayOfYear >= startDay && dayOfYear <= endDay
+          : dayOfYear >= startDay || dayOfYear <= endDay;
+      };
+      for (const el of document.querySelectorAll('[data-seasonal-insignia]')) {
+        const allEntries = JSON.parse(el.dataset.insignia ?? '[]');
+        const entries = previewAll ? allEntries : allEntries.filter(inWindow);
+        if (!entries.length) continue;
+        document.documentElement.dataset.insignia = entries.map(({ id }) => id).join(' ');
+        el.replaceChildren(
+          ...entries.map((entry) => {
+            const item = document.createElement('a');
+            const label = document.createElement('span');
+            item.className = 'insignia';
+            item.dataset.insigniaId = entry.id;
+            item.href = entry.href;
+            item.target = '_blank';
+            item.rel = 'noopener noreferrer';
+            item.title = entry.label;
+            item.setAttribute('aria-label', `${entry.label} — Wikipedia`);
+            label.className = 'insignia-label';
+            label.textContent = entry.label;
+            item.append(label);
+            return item;
+          }),
+        );
+        el.hidden = false;
       }
     </script>
-    <slot />
     <div class="grain" aria-hidden="true"></div>
   </body>
 </html>

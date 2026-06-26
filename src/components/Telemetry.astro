@@ -2,15 +2,17 @@
 // Terse, functional readouts - all of it true of a static site. Real commit,
 // real build time, real coordinates, real clock. Precision, not cosplay.
 import { rev, builtLabel } from '../lib/build';
+import { seasonalInsignia } from '../lib/seasonal-insignia';
 import { site } from '../lib/site';
 ---
 
-<div class="telemetry">
-  <span>REV {rev} <span class="sep">//</span> BUILT {builtLabel}</span>
-  <span
-    >{site.coords} <span class="sep">//</span>
-    <time id="clock" class="clock">--:--:--</time></span
-  >
+<div class="flex items-center justify-between gap-3 border-b border-hairline px-6 py-2 font-mono text-xs tracking-widest text-faint max-sm:gap-2">
+  <span>REV {rev} <span class="text-dim">//</span> BUILT {builtLabel}</span>
+  <span class="flex items-center justify-end gap-3 max-[560px]:gap-2">
+    <span hidden class="insignia-stack flex items-center gap-2" data-seasonal-insignia data-insignia={JSON.stringify(seasonalInsignia)}></span>
+    <span>{site.coords} <span class="text-dim">//</span></span>
+    <time id="clock" class="text-text">--:--:--</time>
+  </span>
 </div>
 
 <script>
@@ -27,28 +29,78 @@ import { site } from '../lib/site';
 </script>
 
 <style>
-  .telemetry {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    padding: 7px var(--pad-x);
-    border-bottom: 1px solid var(--hairline);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--faint);
+  :global(.insignia-stack[hidden]) {
+    display: none;
   }
-  .sep {
-    color: var(--dim);
+  :global(.insignia) {
+    --insignia-band: var(--seasonal);
+    display: block;
+    width: 13px;
+    height: 13px;
+    opacity: 0.78;
+    background: var(--insignia-band);
   }
-  .clock {
-    color: var(--text);
+  :global(.insignia:hover),
+  :global(.insignia:focus-visible) {
+    opacity: 1;
+    outline: 1px solid var(--dim);
+    outline-offset: 2px;
   }
-  @media (max-width: 560px) {
-    .telemetry {
-      font-size: 9px;
-      gap: 8px;
-    }
+  :global(.insignia-label) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  :global(.insignia[data-insignia-id='black-history-month']) {
+    --insignia-band: linear-gradient(90deg, #d43f2f 0 33%, #111414 33% 66%, #1faa68 66%);
+  }
+  :global(.insignia[data-insignia-id='ukraine-solidarity']),
+  :global(.insignia[data-insignia-id='ukraine-independence-day']) {
+    --insignia-band: linear-gradient(180deg, #0057b7 0 50%, #ffd700 50%);
+  }
+  :global(.insignia[data-insignia-id='international-womens-day']) {
+    --insignia-band: linear-gradient(90deg, #7d4cc2 0 45%, #eceae5 45% 55%, #1faa68 55%);
+  }
+  :global(.insignia[data-insignia-id='spring-equinox']) {
+    --insignia-band: linear-gradient(90deg, #9ecf5f 0 50%, #e3c76f 50%);
+  }
+  :global(.insignia[data-insignia-id='earth-day']) {
+    --insignia-band: radial-gradient(circle at 35% 50%, #1faa68 0 24%, transparent 25%), #3366e0;
+  }
+  :global(.insignia[data-insignia-id='aapi-heritage-month']) {
+    --insignia-band: linear-gradient(90deg, #d64f35 0 25%, #e3a72c 25% 50%, #eceae5 50% 75%, #3366e0 75%);
+  }
+  :global(.insignia[data-insignia-id='pride-month']) {
+    --insignia-band: linear-gradient(90deg, #e40303 0 16.66%, #ff8c00 16.66% 33.33%, #ffed00 33.33% 50%, #008026 50% 66.66%, #24408e 66.66% 83.33%, #732982 83.33%);
+  }
+  :global(.insignia[data-insignia-id='juneteenth']) {
+    --insignia-band: linear-gradient(90deg, #cf2e2e 0 38%, #eceae5 38% 44%, #24408e 44% 100%);
+  }
+  :global(.insignia[data-insignia-id='midsummer']) {
+    --insignia-band: radial-gradient(circle at 50% 50%, #f2d15c 0 24%, transparent 25%), #e3a72c;
+  }
+  :global(.insignia[data-insignia-id='disability-pride-month']) {
+    --insignia-band: linear-gradient(135deg, #5d6970 0 18%, #d6d6d6 18% 28%, #e3a72c 28% 38%, #d43f2f 38% 48%, #7d4cc2 48% 58%, #3366e0 58% 68%, #1faa68 68% 78%, #111414 78%);
+  }
+  :global(.insignia[data-insignia-id='autumn-equinox']) {
+    --insignia-band: linear-gradient(90deg, #b45f2a 0 50%, #4a504f 50%);
+  }
+  :global(.insignia[data-insignia-id='indigenous-peoples-day']) {
+    --insignia-band: linear-gradient(90deg, #c23b22 0 25%, #e3a72c 25% 50%, #eceae5 50% 75%, #111414 75%);
+  }
+  :global(.insignia[data-insignia-id='samhain']) {
+    --insignia-band: linear-gradient(90deg, #d56a21 0 50%, #4b2b63 50%);
+  }
+  :global(.insignia[data-insignia-id='transgender-day-of-remembrance']) {
+    --insignia-band: linear-gradient(90deg, #5bcffa 0 20%, #f5a9b8 20% 40%, #eceae5 40% 60%, #f5a9b8 60% 80%, #5bcffa 80%);
+  }
+  :global(.insignia[data-insignia-id='human-rights-day']) {
+    --insignia-band: linear-gradient(90deg, #3366e0 0 70%, #eceae5 70%);
+  }
+  :global(.insignia[data-insignia-id='yule']) {
+    --insignia-band: linear-gradient(90deg, #1f7a4d 0 45%, #eceae5 45% 55%, #b8202f 55%);
   }
 </style>

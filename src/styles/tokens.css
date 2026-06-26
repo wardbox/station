@@ -33,6 +33,7 @@
   /* Live / now ONLY - moved to cyan so it never blurs with the green accent.
      (Was mint #5dd39e back when the accent was red.) */
   --live: #34c0d4;
+  --seasonal: #c7cac8;
 
   /* --- Type: condensed humanist display + grotesk body + mono readouts --- */
   --display: 'IBM Plex Sans', system-ui, sans-serif;
@@ -45,7 +46,7 @@
   --track-mono: 0.06em;
 
   /* --- Layout --- */
-  --field-w: 720px; /* the field is deliberately narrow and unhurried */
+  --field-w: 880px; /* contained, but allowed to breathe on desktop */
   --pad-x: 26px; /* the field's horizontal gutter */
 
   /* Backdrop photo: set --backdrop-image to url('/your-photo.jpg') to bring it

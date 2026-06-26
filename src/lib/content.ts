@@ -44,11 +44,6 @@ export async function getAllPosts(): Promise<Post[]> {
   return all;
 }
 
-// The single latest post - the one the accent featured bar spotlights.
-export async function getLatest(): Promise<Post | undefined> {
-  return (await getAllPosts())[0];
-}
-
 // Posts grouped by section, each list newest first.
 export async function getSections(): Promise<
   { type: PostType; label: string; posts: Post[] }[]
@@ -72,6 +67,6 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
 });
 export const formatDate = (d: Date) => fmt.format(d);
 
-// "06·08" (MM·DD) - the tight mono readout used in the index + latest band.
+// "06·08" (MM·DD) - the tight mono readout used in lists.
 const p2 = (n: number) => String(n).padStart(2, '0');
 export const formatShort = (d: Date) => `${p2(d.getMonth() + 1)}·${p2(d.getDate())}`;

@@ -25,14 +25,8 @@ if (!section) throw new Error(`No section found for type "${type}"`);
   <main class="field">
     <Telemetry />
     <Topbar />
-    <div class="body">
+    <div class="px-[var(--pad-x)] py-6">
       <SectionIndex sections={[section]} />
     </div>
   </main>
 </Base>
-
-<style>
-  .body {
-    padding: 24px var(--pad-x);
-  }
-</style>

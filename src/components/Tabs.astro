@@ -8,50 +8,18 @@ interface Props {
 }
 const { sections } = Astro.props;
 const total = sections.reduce((n, s) => n + s.posts.length, 0);
+const tabClass = 'tab cursor-pointer border border-hairline bg-transparent px-3 py-1.5 font-body text-xs tracking-wide text-text-muted transition-colors hover:border-dim aria-[current=true]:border-dim aria-[current=true]:text-text-bright [&[aria-current=true]_span]:text-count-active';
 ---
 
-<nav class="tabs" aria-label="Sections" data-tabs>
-  <button class="tab" type="button" data-filter="all" aria-current="true">
-    All <span class="count">{total}</span>
+<nav class="mb-6 flex flex-wrap gap-2" aria-label="Sections" data-tabs>
+  <button class={tabClass} type="button" data-filter="all" aria-current="true">
+    All <span class="text-faint">{total}</span>
   </button>
   {
     sections.map((s) => (
-      <button class="tab" type="button" data-filter={s.type}>
-        {s.label} <span class="count">{s.posts.length}</span>
+      <button class={tabClass} type="button" data-filter={s.type}>
+        {s.label} <span class="text-faint">{s.posts.length}</span>
       </button>
     ))
   }
 </nav>
-
-<style>
-  .tabs {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 22px;
-  }
-  .tab {
-    font-family: var(--body);
-    font-size: 11px;
-    letter-spacing: 0.07em;
-    padding: 5px 11px;
-    color: var(--text-muted);
-    background: transparent;
-    border: 1px solid var(--hairline);
-    cursor: pointer;
-    transition: color 0.14s ease, border-color 0.14s ease;
-  }
-  .tab:hover {
-    border-color: var(--dim);
-  }
-  .tab[aria-current='true'] {
-    color: var(--text-bright);
-    border-color: var(--dim);
-  }
-  .count {
-    color: var(--faint);
-  }
-  .tab[aria-current='true'] .count {
-    color: var(--count-active);
-  }
-</style>
