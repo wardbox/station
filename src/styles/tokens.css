@@ -35,7 +35,7 @@
   --live: #34c0d4;
 
   /* --- Type: condensed humanist display + grotesk body + mono readouts --- */
-  --display: 'Barlow Semi Condensed', system-ui, sans-serif;
+  --display: 'IBM Plex Sans', system-ui, sans-serif;
   --body: 'IBM Plex Sans', system-ui, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
   --weight-medium: 500;

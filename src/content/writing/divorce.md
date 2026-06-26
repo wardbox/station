@@ -3,47 +3,58 @@ title: On a divorce
 date: 2026-06-19
 summary: Things I learned through experiencing a divorce.
 filed: [personal, life]
-draft: true
+draft: false
 ---
 
-## Preface
-I'm coming to the end of a year long divorce and wanted to do a form of personal retro to process how what I did and didn't do opened the door to learning more about who I am. Here are some lessons, rules, mistakes, and thoughts I had on the journey in no organized manner. Not all of these are specific to divorce, but all were surfaced and highlighted because of my experience over the past year.
+I'm coming to the end of a year long divorce and wanted to do a form of personal retro to process how what I did and didn't do opened the door to learning more about who I am.
 
-For now all you need to know is I was in a marriage of 8 months with no children. I cannot imagine the pain that a parent must go through when getting divorced with kids, and am thankful that we were in a much simpler situation where we can cut ties and not have to be in eachothers lives afterward. I don't think I'd be able to handle maintaining a relationship (however strained) with the person who betrayed me for the rest of my life.
+Here are some lessons, rules, mistakes, and thoughts I had on the journey in no organized manner. Not all of these are specific to divorce, but all were surfaced and highlighted because of my experience over the past year.
 
-## Behave in a way you will be proud of once this is over
-Once it's all said and done and you lay down at night on the other side of this, you are the only person who has to deal with who you are and what you've done, so carry yourself in a way that you'd be proud of. This was the driving principle that guided me through every decision I made in the past year (and beyond) and looking back I can say I am proud of myself. I faced a lot.
+For context, I was in a marriage of 8 months with no children. I know our situation was simpler than many, and I'm thankful for that.
 
-- I paid mortgage and utilities for 7 months on the house my ex wife was living in with zero contribution all while she was sitting on 50k in inheritance
-- Constant berating and harassment via text, email, and attorney from my ex wife
-- Nearly losing my cat to a blockage
-- Finding out my dad has cancer
-- Finding out I have fatty liver disease and a BRCA 2 gene mutation
-- Having my photo along with lies about my debts, sexuality, and character disparaged on a public forum by my ex wife
+## Lessons
 
-I believe I did everything I could to be a force of good throughout this journey, even giving grace when it wasn't deserved. While it was tempting many times to be vindictive, to "get back" at her for vile behavior, I resisted and eventually came out on top because I wouldn't have been proud of the man that made those poor decisions and fought in the mud.
+### Behave in a way you will be proud of once this is over
+Once it's all said and done and you lay down at night on the other side of this, you are the only person who has to deal with who you are and what you've done. Carry yourself in a way that you'd be proud of. This was the driving principle that guided me through every decision I made in the past year, and looking back I can say I am proud of myself. I faced a lot.
 
-## You can't reason with an unreasonable person
+There was financial pressure, harassment, health scares, family illness, public humiliation, and the grief of watching someone I loved become someone I no longer recognized. Some of it was divorce-specific, some of it was just life deciding to pile on, but it all happened at once and it all had to be endured.
 
-## The best way to deal with manipulation, gaslighting, and narcissism or how I became a grey rock
-If you have yet to run in to someone who manipulates, lies, gaslights, etc then this may be hard to empathise with. For me, I never met someone who did this to the extent that I experienced, and it took knowing someone like this and seeing it first hand to really understand how insidious this can become. The best thing you can do for yourself when someone like this makes an emotionally charged comment, attempts to draw you in to an argument, tries to get you to defend yourself, is either don't respond entirely or respond in the most unengaged, logistics-focused, and boring way possible. This inevitably does irk the manipualtor, but the more it happens the less response they get back and the less response they get back the less conflict they have to feed on. When that faucet runs dry they disengage more and more until eventually they are out of your life entirely and you can finally be at peace. A few times I visualized puppet strings coming untied from my limbs as she reached out less and less over time, and it made it really clear to me just how much she was able to manipulate me both during and after our relationship.
+There were days where I felt like I was being punished for trying to be reasonable. There were days where I wanted to send the mean text, make the public correction, prove my side, or stop caring about being good. I don't think those impulses make you a bad person, I think they make you a hurt person. But hurt is not a good enough reason to become someone you won't respect later.
 
-## Money will go away but your happiness and safety is worth dollar
-You will lose money, you will lose expensive posessions, but your happiness and mental health can be protected by a good attorney. If reasonable communication isn't working, force communication through a professional.
+I believe I did everything I could to be a force of good throughout this journey, even giving grace when it wasn't deserved. I resisted the urge to fight in the mud because I wouldn't have been proud of the man who made those choices.
 
-## You probably won't get your attorney fees paid
-One side could be lying to the court and forcing you to spend money to defend yourself, but the court doesn't seem to think this justifies having your attorney fees paid for. I never believed I was entitled to attorneys fees, afterall I wouldn't even be able to defend myself without one anyway, but this still surprised me at the end of the day.
+### You can't reason with an unreasonable person
+Sometimes the conversation is not really about resolving anything. It's about control, punishment, winning, rewriting the story, or getting a reaction.
+
+I spent too much time thinking if I could just explain myself clearly enough, calmly enough, kindly enough, then some mutual understanding would appear. I wanted so badly for there to be a version of the conversation where the person I remembered showed back up. Sometimes they don't. Sometimes the lesson is to stop offering words to someone who is committed to misunderstanding them.
+
+### How I became a grey rock
+If you have yet to run into someone who manipulates, lies, gaslights, etc then this may be hard to empathize with. I don't know if narcissism is the right clinical label, and honestly it doesn't really matter to me. What I can say is that some of the behavior felt narcissistic: emotionally charged messages, attempts to draw me into arguments, pressure to defend myself, and a constant pull toward conflict.
+
+The best thing you can do for yourself is either not respond at all, or respond in the most unengaged, logistics-focused, and boring way possible. The less response they get back, the less conflict they have to feed on. A few times I visualized puppet strings coming untied from my limbs as she reached out less and less over time, and it made it clear how much I had been reacting to the pull. That part was hard to admit because it meant I had to see my own participation in the cycle too, not as blame, but as something I needed to get free from.
+
+### Money will go away but your happiness and safety is worth dollars
+You will lose money, you will lose expensive possessions, but your happiness and mental health can be protected by a good attorney. I hated how much money it took to create distance, but I hated the feeling of being in direct contact more. If reasonable communication isn't working, force communication through a professional.
+
+### You probably won't get your attorney fees paid
+Even if one side is forcing the other to spend money defending themselves, you still probably won't get your attorney fees paid. Don't build your plan around getting that money back.
 
 
-# Things I wish I handled differently
+## Things I wish I handled differently
 
-## Have a relationship with a therapist before the storm rolls in
+### Have a relationship with a therapist before the storm rolls in
+I wish I had already had a therapist before everything started. Finding one in the middle of the worst part is still worth doing, but it is harder to build trust, explain context, and learn how to use therapy well when you're already in crisis.
 
-## Document large investments rigorously
-It might seem excessive now, but document where the money came from, who it came from, when it was transfered, and any other details and documents you can get for any large investments. When it comes to a house, car, or other property that might be split in the future, this is gold to have on hand and could cost you without it.
+If you can, build that relationship before you need it.
 
-## If you are leaving the house, bring anything you want to keep
-It becomes much easier to say "we each keep whatever we have in our posession" rather than fight over individual little items. If communication has broken down to attorneys, the cost will rise dramatically for an email that could have been solved in the first place by you having whatever you're asking for back. You can always ask for it back in trial or the settlement but it's easier to just start with it in the first place.
+### Document large investments rigorously
+It might seem excessive now, but document where money came from, who it came from, when it was transferred, and any other details and documents you can get for any large investments. When it comes to a house, car, or other property that might be split in the future, this is gold to have on hand and could cost you without it.
 
-## Validation is tempting, but hold off on dating
-It's tempting to want to know you can still experience a good thing, whether it's a relationship or even just some dates, especially when the thing you're losing was a meaningful relationship with someone you loved. But time is something that you have to put above that and it'll help you heal far more than any other person can. You are vulnerable and you're asking someone to walk in to a warzone of sorts. I got into short term relationships with 2 different people since last year when this all started. I don't regret how I handled those relationships, but in hindsight I think I would have been better off alone with more time to process so I could show up for whoever I do end up with in a better way.
+### If you are leaving the house, bring anything you want to keep
+It becomes much easier to say "we each keep whatever we have in our possession" rather than fight over individual little items. If communication has broken down to attorneys, the cost will rise dramatically for an email that could have been solved in the first place by you having whatever you're asking for back. You can always ask for it back in trial or the settlement but it's easier to just start with it in the first place.
+
+### Validation is tempting, but hold off on dating
+It's tempting to want to know you can still experience a good thing, especially when the thing you're losing was a meaningful relationship with someone you loved. But time is something you have to put above that. You are vulnerable and you're asking someone to walk into a warzone of sorts. I did date a bit after this all started. I don't regret how I handled it, but in hindsight I think I would have been better off alone with more time to process.
+
+## Closing thoughts
+Divorce is not easy. It can bring out the worst even when you think it couldn't or shouldn't. For me, the most important thing was focusing on what was in my control. That can feel helpless because sometimes what is in your control is very small. But it is still yours.
