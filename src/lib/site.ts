@@ -3,7 +3,7 @@
 export const site = {
   name: 'station',
   // Person + a plain location label. No seal, no theatre.
-  owner: 'wardbox',
+  owner: 'Dylan',
   location: 'Kingston, WA',
   // Real coordinates for the telemetry bar - true, but deliberately coarse
   // (~1 km). Honest without pointing strangers at the doorstep.
