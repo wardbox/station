@@ -15,6 +15,11 @@
 	@health path /healthz
 	respond @health "ok" 200
 
+	# Block known AI training/scraping bots. This is best-effort: honest bots are
+	# stopped here; dishonest bots can lie about their user agent.
+	@ai_bots header_regexp User-Agent (?i)(GPTBot|ChatGPT-User|ClaudeBot|Claude-User|anthropic-ai|Google-Extended|PerplexityBot|CCBot|Bytespider|Amazonbot|Applebot-Extended|Meta-ExternalAgent|Meta-ExternalFetcher|FacebookBot|Diffbot|ImagesiftBot|Omgilibot|Omgili|YouBot|cohere-ai|AI2Bot|Kangaroo Bot|Scrapy|PetalBot)
+	respond @ai_bots "for humans only" 403
+
 	file_server
 
 	# Astro emits a real 404 page; serve it for missing paths.
