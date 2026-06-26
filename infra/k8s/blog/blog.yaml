@@ -82,9 +82,20 @@ spec:
   tls:
     - hosts:
         - stationsystems.dev
+        - katana.stationsystems.dev
       secretName: stationsystems-dev-wildcard-tls
   rules:
     - host: stationsystems.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blog
+                port:
+                  number: 80
+    - host: katana.stationsystems.dev
       http:
         paths:
           - path: /
