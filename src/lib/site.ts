@@ -11,7 +11,7 @@ export const site = {
   // One honest line. What this place is, said plainly.
   tagline: 'things i build and break',
   // The muted "now -" readout: what you are actually working on.
-  now: 'wiring up the front door',
+  now: 'touching grass',
   // Keyboard hints shown in the status line. These are really wired on the index.
   keys: [
     { kc: 'J / K', label: 'move' },
