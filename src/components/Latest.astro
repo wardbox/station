@@ -11,21 +11,18 @@ const { data } = post.entry;
 ---
 
 <a class="latest" href={postPath(post)}>
-  <div>
-    <div class="latest-eyebrow">Latest</div>
-    <div class="latest-title">{data.title}</div>
-  </div>
+  <span class="latest-eyebrow">Latest</span>
+  <span class="latest-title">{data.title}</span>
   <span class="latest-date">{formatShort(data.date)}</span>
 </a>
 
 <style>
   .latest {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
+    align-items: baseline;
+    gap: 12px;
     background: var(--accent);
-    padding: 12px var(--pad-x);
+    padding: 9px var(--pad-x);
   }
   .latest:hover .latest-title {
     text-decoration: underline;
@@ -36,18 +33,20 @@ const { data } = post.entry;
     letter-spacing: var(--track-label);
     text-transform: uppercase;
     color: var(--accent-tint);
-    margin-bottom: 1px;
+    flex: 0 0 auto;
   }
   .latest-title {
-    font-family: var(--display);
+    flex: 1 1 auto;
+    font-family: var(--body);
     font-weight: var(--weight-medium);
-    font-size: 19px;
+    font-size: 14px;
     color: var(--on-accent);
   }
   .latest-date {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--accent-tint);
+    flex: 0 0 auto;
     white-space: nowrap;
   }
 </style>

@@ -1,6 +1,6 @@
 ---
 title: On a divorce
-date: 2026-06-19
+date: 2026-06-26
 summary: Things I learned through experiencing a divorce.
 filed: [personal, life]
 draft: false
