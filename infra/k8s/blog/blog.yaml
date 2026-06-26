@@ -24,7 +24,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: blog
-          image: ghcr.io/wardbox/station@sha256:694519e19e0afdc34ee5d93fb21e1e68e41f189b1bbc9b23f87eb8e46df21cfe
+          image: ghcr.io/wardbox/station@sha256:ed43dc9a638d75a0416b5185214bfd4fa4465001d640f6282a1f93aee50b4778
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
