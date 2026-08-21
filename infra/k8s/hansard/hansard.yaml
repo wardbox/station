@@ -1,0 +1,126 @@
+# Hansard — Sliq Harmony transcript extractor (github.com/wardbox/hansard).
+# Image is built and pushed by that repo's Actions; this manifest owns deploy.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hansard
+---
+# TLS secrets are namespace-scoped, so hansard needs its own copy of the
+# wildcard cert (same ClusterIssuer as cert-manager/wildcard-certificate.yaml).
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: stationsystems-dev-wildcard
+  namespace: hansard
+spec:
+  secretName: stationsystems-dev-wildcard-tls
+  issuerRef:
+    name: letsencrypt-dns01-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.stationsystems.dev"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hansard
+  namespace: hansard
+  labels:
+    app: hansard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hansard
+  template:
+    metadata:
+      labels:
+        app: hansard
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: hansard
+          # :latest until the first main build lands; pin a digest after
+          image: ghcr.io/wardbox/hansard:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: TRUST_PROXY
+              value: "1"
+            - name: APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hansard-env
+                  key: APP_PASSWORD
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: hansard-env
+                  key: SESSION_SECRET
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hansard
+  namespace: hansard
+spec:
+  selector:
+    app: hansard
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hansard
+  namespace: hansard
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - hansard.stationsystems.dev
+      secretName: stationsystems-dev-wildcard-tls
+  rules:
+    - host: hansard.stationsystems.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hansard
+                port:
+                  number: 80
