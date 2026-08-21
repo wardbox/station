@@ -17,3 +17,8 @@ spec:
       defaultTags: "tag:k8s-operator"
     proxyConfig:
       defaultTags: "tag:k8s"
+    # kubectl over the tailnet (auth mode: tailnet ACL grant maps users to
+    # k8s groups) — admin access no longer depends on the Hetzner firewall's
+    # admin_cidrs IP whitelist
+    apiServerProxyConfig:
+      mode: "true"
