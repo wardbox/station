@@ -124,3 +124,13 @@ spec:
                 name: hansard
                 port:
                   number: 80
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hansard-env
+  namespace: hansard
+type: Opaque
+stringData:
+  APP_PASSWORD: IKPphA0t1WvQPQRe
+  SESSION_SECRET: 714dd9f2dfb44fec3f581db5084e7b50c17c7b5929aa41c23427fdd6857b07a9
