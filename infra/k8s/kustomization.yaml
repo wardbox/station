@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - blog/blog.yaml
   - hansard/hansard.yaml
+  - jptcg/jptcg.yaml
   - argocd/server-tls.yaml
   - tailscale/namespace.yaml
   - tailscale/operator.yaml
