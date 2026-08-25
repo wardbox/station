@@ -49,7 +49,7 @@ spec:
       containers:
         - name: jptcg
           # Digest pinned; jptcg repo CI bumps it on every main build.
-          image: ghcr.io/wardbox/jptcg@sha256:af6fe96bce1381b007fcdcce1ff6924963d8a3344b0c992d81556c9541d7a91c
+          image: ghcr.io/wardbox/jptcg@sha256:28156e4881c950ad64119c5dd58cbe9e495feb4028f11a4a0b45449997f1c3bc
           imagePullPolicy: Always
           ports:
             - name: http
