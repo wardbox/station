@@ -48,8 +48,8 @@ spec:
         fsGroup: 1000 # so the nonroot user can write the PVC
       containers:
         - name: jptcg
-          # :latest until the first main build lands; pin a digest after
-          image: ghcr.io/wardbox/jptcg:latest
+          # Digest pinned; jptcg repo CI bumps it on every main build.
+          image: ghcr.io/wardbox/jptcg@sha256:af6fe96bce1381b007fcdcce1ff6924963d8a3344b0c992d81556c9541d7a91c
           imagePullPolicy: Always
           ports:
             - name: http
