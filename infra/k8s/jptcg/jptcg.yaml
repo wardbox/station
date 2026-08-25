@@ -6,21 +6,6 @@ kind: Namespace
 metadata:
   name: jptcg
 ---
-# TLS secrets are namespace-scoped, so jptcg needs its own copy of the
-# wildcard cert (same ClusterIssuer as cert-manager/wildcard-certificate.yaml).
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: stationsystems-dev-wildcard
-  namespace: jptcg
-spec:
-  secretName: stationsystems-dev-wildcard-tls
-  issuerRef:
-    name: letsencrypt-dns01-cloudflare
-    kind: ClusterIssuer
-  dnsNames:
-    - "*.stationsystems.dev"
----
 # Snapshot history lives here — this is the DB.
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -122,38 +107,21 @@ spec:
           persistentVolumeClaim:
             claimName: jptcg-data
 ---
+# Tailnet-only: the Tailscale operator turns this Service into a tailnet
+# device named `jptcg` (MagicDNS). No public Ingress on purpose.
 apiVersion: v1
 kind: Service
 metadata:
   name: jptcg
   namespace: jptcg
+  annotations:
+    tailscale.com/hostname: jptcg
 spec:
+  type: LoadBalancer
+  loadBalancerClass: tailscale
   selector:
     app: jptcg
   ports:
     - name: http
       port: 80
       targetPort: http
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: jptcg
-  namespace: jptcg
-spec:
-  ingressClassName: traefik
-  tls:
-    - hosts:
-        - jptcg.stationsystems.dev
-      secretName: stationsystems-dev-wildcard-tls
-  rules:
-    - host: jptcg.stationsystems.dev
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: jptcg
-                port:
-                  number: 80
