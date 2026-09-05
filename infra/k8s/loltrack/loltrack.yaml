@@ -213,10 +213,10 @@ spec:
           resources:
             requests:
               cpu: 250m
-              memory: 128Mi
+              memory: 256Mi
             limits:
               cpu: "1"
-              memory: 512Mi
+              memory: 1Gi # OOMKilled at 512Mi mid-crawl on 2026-09-05
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
