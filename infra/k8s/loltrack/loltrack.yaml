@@ -118,7 +118,7 @@ metadata:
   labels:
     app: loltrack
 spec:
-  replicas: 0 # node wedged twice under the crawl on 2026-09-05; keep off until resized or crawl disabled
+  replicas: 1
   strategy:
     type: Recreate # RWO volume
   selector:
@@ -197,6 +197,10 @@ spec:
             # pinned every core on the CPX21 and starved kubelet/Traefik.
             - name: WORKER_CONCURRENCY
               value: "1"
+            # No idle auto-crawl: the CPX21 wedged twice under it on 2026-09-05.
+            # Pulls, ingests and rescores still run. Drop this on a bigger node.
+            - name: CRAWL
+              value: "0"
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
