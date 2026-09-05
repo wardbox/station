@@ -40,7 +40,7 @@ metadata:
   labels:
     app: postgres
 spec:
-  replicas: 0 # node wedged twice under the crawl on 2026-09-05; keep off until resized or crawl disabled
+  replicas: 1
   strategy:
     type: Recreate # RWO volume
   selector:
