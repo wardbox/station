@@ -1,0 +1,276 @@
+# loltrack / numbered.gg — League stats site (github.com/wardbox/loltrack).
+# Image is built by that repo's Actions; this manifest owns deploy.
+# One pod runs api + worker: the worker is the only raw-dir writer, and one
+# pod keeps the RWO volume simple on a single node. Worker applies DB
+# migrations on start; the API never does.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: loltrack
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: loltrack-pgdata
+  namespace: loltrack
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: loltrack-raw
+  namespace: loltrack
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: loltrack
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate # RWO volume
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - name: pg
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: loltrack
+            - name: POSTGRES_DB
+              value: loltrack
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "loltrack"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "loltrack"]
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: loltrack-pgdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: loltrack
+spec:
+  selector:
+    app: postgres
+  ports:
+    - name: pg
+      port: 5432
+      targetPort: pg
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loltrack
+  namespace: loltrack
+  labels:
+    app: loltrack
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate # RWO volume
+  selector:
+    matchLabels:
+      app: loltrack
+  template:
+    metadata:
+      labels:
+        app: loltrack
+    spec:
+      automountServiceAccountToken: false
+      # Image is private on GHCR; secret created manually:
+      # kubectl -n loltrack create secret docker-registry ghcr-pull \
+      #   --docker-server=ghcr.io --docker-username=wardbox --docker-password=<PAT with read:packages>
+      imagePullSecrets:
+        - name: ghcr-pull
+      securityContext:
+        fsGroup: 1000 # so the nonroot user can write the PVC
+      containers:
+        - name: api
+          # :latest until the first main build lands; pin a digest after
+          image: ghcr.io/wardbox/loltrack:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: DATABASE_URL
+            - name: RIOT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: RIOT_API_KEY
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+        - name: worker
+          image: ghcr.io/wardbox/loltrack:latest
+          imagePullPolicy: Always
+          command: ["bun", "server/worker.ts"]
+          env:
+            - name: RAW_DIR
+              value: /data/raw
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: DATABASE_URL
+            - name: RIOT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: RIOT_API_KEY
+          volumeMounts:
+            - name: raw
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 10m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: raw
+          persistentVolumeClaim:
+            claimName: loltrack-raw
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loltrack
+  namespace: loltrack
+spec:
+  selector:
+    app: loltrack
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+# numbered.gg is at Porkbun (not Cloudflare), so no DNS-01 wildcard here;
+# cert-manager solves HTTP-01 through Traefik instead.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: loltrack
+  namespace: loltrack
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http01
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - numbered.gg
+        - www.numbered.gg
+      secretName: numbered-gg-tls
+  rules:
+    - host: numbered.gg
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: loltrack
+                port:
+                  number: 80
+    - host: www.numbered.gg
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: loltrack
+                port:
+                  number: 80
