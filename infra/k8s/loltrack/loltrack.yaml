@@ -55,6 +55,8 @@ spec:
       containers:
         - name: postgres
           image: postgres:17-alpine
+          # Keep Postgres inside its memory limit under concurrent ingest writes.
+          args: ["-c", "shared_buffers=128MB", "-c", "work_mem=8MB"]
           ports:
             - name: pg
               containerPort: 5432
@@ -85,9 +87,10 @@ spec:
             periodSeconds: 20
           resources:
             requests:
-              cpu: 50m
+              cpu: 250m
               memory: 256Mi
             limits:
+              cpu: "1"
               memory: 1Gi
       volumes:
         - name: pgdata
@@ -115,7 +118,10 @@ metadata:
   labels:
     app: loltrack
 spec:
-  replicas: 1
+  # Scaled to 0 on 2026-09-05: the node went unresponsive ~15 min after the
+  # first rollout (worker crawl + postgres on a 4 GB CPX21). Set back to 1
+  # once the node is rescaled or the worker's resource use is understood.
+  replicas: 0
   strategy:
     type: Recreate # RWO volume
   selector:
@@ -167,10 +173,11 @@ spec:
             periodSeconds: 20
           resources:
             requests:
-              cpu: 10m
-              memory: 128Mi
+              cpu: 50m
+              memory: 64Mi
             limits:
-              memory: 512Mi
+              cpu: 500m
+              memory: 256Mi
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
@@ -189,6 +196,10 @@ spec:
           env:
             - name: RAW_DIR
               value: /data/raw
+            # Ingests are CPU-bound and Postgres-write-heavy; 4 in parallel
+            # pinned every core on the CPX21 and starved kubelet/Traefik.
+            - name: WORKER_CONCURRENCY
+              value: "1"
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
@@ -204,10 +215,11 @@ spec:
               mountPath: /data
           resources:
             requests:
-              cpu: 10m
-              memory: 256Mi
+              cpu: 250m
+              memory: 128Mi
             limits:
-              memory: 1Gi
+              cpu: "1"
+              memory: 512Mi
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
