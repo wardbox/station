@@ -118,10 +118,7 @@ metadata:
   labels:
     app: loltrack
 spec:
-  # Scaled to 0 on 2026-09-05: the node went unresponsive ~15 min after the
-  # first rollout (worker crawl + postgres on a 4 GB CPX21). Set back to 1
-  # once the node is rescaled or the worker's resource use is understood.
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate # RWO volume
   selector:
