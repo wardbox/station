@@ -118,7 +118,7 @@ metadata:
   labels:
     app: loltrack
 spec:
-  replicas: 1
+  replicas: 0 # node wedged twice under the crawl on 2026-09-05; keep off until resized or crawl disabled
   strategy:
     type: Recreate # RWO volume
   selector:
