@@ -156,6 +156,22 @@ spec:
                 secretKeyRef:
                   name: loltrack-env
                   key: RIOT_API_KEY
+            # Discord sign-in and the summoner claim (loltrack#155): the site's
+            # origin as the browser sees it (the OAuth redirect and the cookies'
+            # Secure flag follow it) and the Discord app. The API alone needs them.
+            # Register https://numbered.gg/api/auth/discord/callback in the Discord app.
+            - name: PUBLIC_URL
+              value: https://numbered.gg
+            - name: DISCORD_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: DISCORD_CLIENT_ID
+            - name: DISCORD_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: DISCORD_CLIENT_SECRET
           readinessProbe:
             httpGet:
               path: /
