@@ -229,6 +229,12 @@ spec:
             # `kubectl top node` climbs past 80% again.
             - name: CRAWL
               value: "DIAMOND,EMERALD"
+            # A chunk of 25 takes about a minute; the five-minute default pause was
+            # for a Postgres working set that turned out to be cached plans
+            # (loltrack#177) and a whisper cache leak (loltrack#179), both gone.
+            # One minute keeps the yield to user searches and ~4x the pace.
+            - name: CRAWL_PAUSE
+              value: "1"
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
