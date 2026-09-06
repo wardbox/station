@@ -86,10 +86,13 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 20
           # Memory is the node's scarce resource (3.9Gi, k3s itself near 1Gi): the
-          # 2026-09-06 crawl took Postgres to 820Mi (page cache within the cgroup,
-          # reclaimable) and the node to 86%, and the control plane starved
-          # (loltrack#172). shared_buffers is 128MB, so 512Mi holds; the kernel
-          # reclaims the cgroup's file cache before it OOMs.
+          # 2026-09-06 crawl took Postgres to 820Mi and the node to 86%, and the
+          # control plane starved (loltrack#172). That growth was the backends'
+          # cached prepared-statement plans, about 3MB per ingest in each of the
+          # worker's ten pooled connections (OOM-killed at 512Mi with 375MB anon,
+          # crawl off, 2026-09-06 04:18); loltrack#177 turns prepared statements
+          # off, after which shared_buffers 128MB plus twenty backends sits near
+          # 200Mi and the rest of 512Mi is reclaimable file cache.
           resources:
             requests:
               cpu: 250m
@@ -218,13 +221,14 @@ spec:
             # pinned every core on the CPX21 and starved kubelet/Traefik.
             - name: WORKER_CONCURRENCY
               value: "1"
-            # No idle crawl. Diamond and Emerald only (loltrack#167), one ingest at
-            # a time, 1 CPU / 1Gi on the worker and on Postgres, still took the node
-            # from 66% to 86% memory in fifteen minutes and starved the control plane
-            # on 2026-09-06 (the site stayed up; kubectl did not). Chunking and
-            # smaller limits first (loltrack#172), then a tier list again.
+            # Diamond and Emerald only (loltrack#167): the whole ladder is too much
+            # for this node. Back on after loltrack#172: the crawl runs in chunks of
+            # 25 with a pause between, the pods are capped at 512Mi + 768Mi, and the
+            # Postgres growth that starved the control plane on 2026-09-06 (cached
+            # prepared statements per backend) is off in loltrack#177. Set "0" if
+            # `kubectl top node` climbs past 80% again.
             - name: CRAWL
-              value: "0"
+              value: "DIAMOND,EMERALD"
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
