@@ -213,10 +213,12 @@ spec:
             # pinned every core on the CPX21 and starved kubelet/Traefik.
             - name: WORKER_CONCURRENCY
               value: "1"
-            # No idle auto-crawl: the CPX21 wedged twice under it on 2026-09-05.
-            # Pulls, ingests and rescores still run. Drop this on a bigger node.
+            # The idle crawl, the tiers the site's players are in only (loltrack#167):
+            # eight buckets of 250, one ingest at a time, then it goes quiet. The full
+            # ladder wedged the CPX21 twice on 2026-09-05 at concurrency 4 and no
+            # memory limit; both are set now. Back to "0" if kubectl top passes 85%.
             - name: CRAWL
-              value: "0"
+              value: DIAMOND,EMERALD
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
