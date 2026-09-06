@@ -221,14 +221,12 @@ spec:
             # pinned every core on the CPX21 and starved kubelet/Traefik.
             - name: WORKER_CONCURRENCY
               value: "1"
-            # Diamond and Emerald only (loltrack#167): the whole ladder is too much
-            # for this node. Back on after loltrack#172: the crawl runs in chunks of
-            # 25 with a pause between, the pods are capped at 512Mi + 768Mi, and the
-            # Postgres growth that starved the control plane on 2026-09-06 (cached
-            # prepared statements per backend) is off in loltrack#177. Set "0" if
-            # `kubectl top node` climbs past 80% again.
-            - name: CRAWL
-              value: "DIAMOND,EMERALD"
+            # The whole ladder (CRAWL unset): 250 per division Iron through Diamond
+            # and 1,000 per apex tier, ~10,000 matches, ~6GB of Postgres and raw on
+            # the 75GB root disk. Diamond and Emerald filled 2026-09-06 with the
+            # node at 63 to 68% once the two leaks were gone (loltrack#172, #177,
+            # #179). Set "0" to stop, or a tier list to narrow, if `kubectl top
+            # node` climbs past 80%.
             # A chunk of 25 takes about a minute; the five-minute default pause was
             # for a Postgres working set that turned out to be cached plans
             # (loltrack#177) and a whisper cache leak (loltrack#179), both gone.
