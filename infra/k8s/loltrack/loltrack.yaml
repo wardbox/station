@@ -85,13 +85,18 @@ spec:
               command: ["pg_isready", "-U", "loltrack"]
             initialDelaySeconds: 30
             periodSeconds: 20
+          # Memory is the node's scarce resource (3.9Gi, k3s itself near 1Gi): the
+          # 2026-09-06 crawl took Postgres to 820Mi (page cache within the cgroup,
+          # reclaimable) and the node to 86%, and the control plane starved
+          # (loltrack#172). shared_buffers is 128MB, so 512Mi holds; the kernel
+          # reclaims the cgroup's file cache before it OOMs.
           resources:
             requests:
               cpu: 250m
-              memory: 256Mi
+              memory: 512Mi
             limits:
               cpu: "1"
-              memory: 1Gi
+              memory: 512Mi
       volumes:
         - name: pgdata
           persistentVolumeClaim:
@@ -236,10 +241,10 @@ spec:
           resources:
             requests:
               cpu: 250m
-              memory: 256Mi
+              memory: 768Mi
             limits:
               cpu: "1"
-              memory: 1Gi # OOMKilled at 512Mi mid-crawl on 2026-09-05
+              memory: 768Mi # OOMKilled at 512Mi mid-crawl on 2026-09-05 at concurrency 4; 543Mi seen at concurrency 1 on 2026-09-06 before chunking (loltrack#172)
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
