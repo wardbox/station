@@ -192,27 +192,13 @@ spec:
               port: http
             initialDelaySeconds: 5
             periodSeconds: 20
-          # The unfurl picture is rendered by a headless Chrome inside this
-          # container (loltrack#184, #213), which needs somewhere to write: the
-          # root filesystem stays read-only and these two are the holes in it.
-          # /tmp takes the throwaway Chrome profile (tens of MB, removed after
-          # each render); /dev/shm is Chrome's own shared memory, whose 64MB
-          # default in a container is what makes a page renderer die mid-load.
-          volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-            - name: dshm
-              mountPath: /dev/shm
           resources:
             requests:
               cpu: 50m
               memory: 64Mi
             limits:
               cpu: 500m
-              # Idle the API is under 100Mi; a render is a Chrome for a couple of
-              # seconds, a few hundred MB, and the in-memory /dev/shm counts here
-              # too. 256Mi OOM-killed the pod on the first unfurl.
-              memory: 640Mi
+              memory: 256Mi # no browser here: the worker renders the unfurl picture and the API serves the stored bytes (loltrack#217)
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
@@ -257,16 +243,32 @@ spec:
                 secretKeyRef:
                   name: loltrack-env
                   key: RIOT_API_KEY
+          # /tmp and /dev/shm are for the unfurl render's headless Chrome
+          # (loltrack#184, #213, #217): the root filesystem stays read-only and
+          # these two are the holes in it. /tmp takes the throwaway Chrome
+          # profile, and its HOME, which is where the crash handler wants its
+          # database (the image's /home/bun is on the read-only root); /dev/shm
+          # is Chrome's own shared memory, whose 64MB default in a container is
+          # what makes a page renderer die mid-load.
           volumeMounts:
             - name: raw
               mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+            - name: dshm
+              mountPath: /dev/shm
           resources:
             requests:
               cpu: 250m
               memory: 768Mi
             limits:
               cpu: "1"
-              memory: 768Mi # OOMKilled at 512Mi mid-crawl on 2026-09-05 at concurrency 4; 543Mi seen at concurrency 1 on 2026-09-06 before chunking (loltrack#172)
+              # 768Mi is the ingest's ceiling: OOMKilled at 512Mi mid-crawl on
+              # 2026-09-05 at concurrency 4; 543Mi seen at concurrency 1 on
+              # 2026-09-06 before chunking (loltrack#172). 1Gi leaves room for a
+              # render's Chrome, a few hundred MB for a couple of seconds, on top
+              # of an ingest. The request is unchanged, so scheduling is too.
+              memory: 1Gi
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
