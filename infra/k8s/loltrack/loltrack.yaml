@@ -161,9 +161,9 @@ spec:
         fsGroup: 1000 # so the nonroot user can write the PVC
       containers:
         - name: api
-          # :latest until the first main build lands; pin a digest after
-          image: ghcr.io/wardbox/loltrack:latest
-          imagePullPolicy: Always
+          # pinned by digest; loltrack's build.yml bumps both image lines on every main build, Argo CD rolls it out
+          image: ghcr.io/wardbox/loltrack@sha256:a64bca98803d3e4fdb8a951fe2f6d5a54ad606761e075b5fb16419ecad0c67f3
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 3000
@@ -225,8 +225,8 @@ spec:
               drop:
                 - ALL
         - name: worker
-          image: ghcr.io/wardbox/loltrack:latest
-          imagePullPolicy: Always
+          image: ghcr.io/wardbox/loltrack@sha256:a64bca98803d3e4fdb8a951fe2f6d5a54ad606761e075b5fb16419ecad0c67f3
+          imagePullPolicy: IfNotPresent
           command: ["bun", "server/worker.ts"]
           env:
             - name: RAW_DIR
