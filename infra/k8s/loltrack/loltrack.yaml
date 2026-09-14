@@ -56,7 +56,8 @@ spec:
         - name: postgres
           image: postgres:17-alpine
           # Keep Postgres inside its memory limit under concurrent ingest writes.
-          args: ["-c", "shared_buffers=128MB", "-c", "work_mem=8MB"]
+          # shared_buffers is a quarter of the limit, as it was at 512Mi.
+          args: ["-c", "shared_buffers=256MB", "-c", "work_mem=8MB"]
           ports:
             - name: pg
               containerPort: 5432
@@ -75,16 +76,23 @@ spec:
           volumeMounts:
             - name: pgdata
               mountPath: /var/lib/postgresql/data
+          # timeoutSeconds defaults to 1, and a busy moment is enough to miss it:
+          # three missed probes killed the container five times in eight days
+          # (loltrack#246). A slow query should degrade, not restart the database,
+          # so liveness now needs two minutes of no answer before it kills.
           readinessProbe:
             exec:
               command: ["pg_isready", "-U", "loltrack"]
             initialDelaySeconds: 5
             periodSeconds: 10
+            timeoutSeconds: 5
           livenessProbe:
             exec:
               command: ["pg_isready", "-U", "loltrack"]
             initialDelaySeconds: 30
             periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 6
           # Memory is the node's scarce resource (3.9Gi, k3s itself near 1Gi): the
           # 2026-09-06 crawl took Postgres to 820Mi and the node to 86%, and the
           # control plane starved (loltrack#172). That growth was the backends'
@@ -93,13 +101,17 @@ spec:
           # crawl off, 2026-09-06 04:18); loltrack#177 turns prepared statements
           # off, after which shared_buffers 128MB plus twenty backends sits near
           # 200Mi and the rest of 512Mi is reclaimable file cache.
+          # 512Mi stopped being enough at a 5.3GB database with 8.2M events in one
+          # table: ordinary ingest was OOM-killing the container (loltrack#246).
+          # 1Gi of the node's 3.8Gi allocatable, with about 1.1Gi free at 70% used;
+          # requests match limits, so Postgres is Guaranteed and evicted last.
           resources:
             requests:
               cpu: 250m
-              memory: 512Mi
+              memory: 1Gi
             limits:
               cpu: "1"
-              memory: 512Mi
+              memory: 1Gi
       volumes:
         - name: pgdata
           persistentVolumeClaim:
