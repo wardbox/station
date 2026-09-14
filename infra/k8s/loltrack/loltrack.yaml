@@ -103,8 +103,10 @@ spec:
           # 200Mi and the rest of 512Mi is reclaimable file cache.
           # 512Mi stopped being enough at a 5.3GB database with 8.2M events in one
           # table: ordinary ingest was OOM-killing the container (loltrack#246).
-          # 1Gi of the node's 3.8Gi allocatable, with about 1.1Gi free at 70% used;
-          # requests match limits, so Postgres is Guaranteed and evicted last.
+          # 1Gi of the node's 3.8Gi allocatable, with about 1.1Gi free at 70% used.
+          # The memory request matches the limit so the node is never scheduled
+          # short of it; the CPU request stays at 250m (the node's CPU is 77%
+          # requested), so the pod is Burstable, not Guaranteed.
           resources:
             requests:
               cpu: 250m
