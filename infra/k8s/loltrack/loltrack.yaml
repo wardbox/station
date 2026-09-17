@@ -162,7 +162,7 @@ spec:
       containers:
         - name: api
           # pinned by digest; loltrack's build.yml bumps both image lines on every main build, Argo CD rolls it out
-          image: ghcr.io/wardbox/loltrack@sha256:3a9bad0005dfd2fb4570fd8fe7208eb38ba92abab70f75e7cc114bbc4cbe3826
+          image: ghcr.io/wardbox/loltrack@sha256:94cf878b56660f90a3276391b27a742e77d48abf0d39fa152c38c71ff5a2bb0c
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -225,7 +225,7 @@ spec:
               drop:
                 - ALL
         - name: worker
-          image: ghcr.io/wardbox/loltrack@sha256:3a9bad0005dfd2fb4570fd8fe7208eb38ba92abab70f75e7cc114bbc4cbe3826
+          image: ghcr.io/wardbox/loltrack@sha256:94cf878b56660f90a3276391b27a742e77d48abf0d39fa152c38c71ff5a2bb0c
           imagePullPolicy: IfNotPresent
           command: ["bun", "server/worker.ts"]
           env:
