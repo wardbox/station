@@ -187,6 +187,16 @@ spec:
                 secretKeyRef:
                   name: loltrack-env
                   key: S3_SECRET_ACCESS_KEY
+            - name: S3_PICTURES_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_PICTURES_BUCKET
+            - name: S3_PICTURES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_PICTURES_URL
             # Discord sign-in and the summoner claim (loltrack#155): the site's
             # origin as the browser sees it (the OAuth redirect and the cookies'
             # Secure flag follow it) and the Discord app. The API alone needs them.
@@ -287,6 +297,16 @@ spec:
                 secretKeyRef:
                   name: loltrack-env
                   key: S3_SECRET_ACCESS_KEY
+            - name: S3_PICTURES_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_PICTURES_BUCKET
+            - name: S3_PICTURES_URL
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_PICTURES_URL
           # /tmp and /dev/shm are for the unfurl render's headless Chrome
           # (loltrack#184, #213, #217): the root filesystem stays read-only and
           # these two are the holes in it. /tmp takes the throwaway Chrome
