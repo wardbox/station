@@ -1,8 +1,8 @@
 # loltrack / numbered.gg — League stats site (github.com/wardbox/loltrack).
 # Image is built by that repo's Actions; this manifest owns deploy.
-# One pod runs api + worker: the worker is the only raw-dir writer, and one
-# pod keeps the RWO volume simple on a single node. Worker applies DB
-# migrations on start; the API never does.
+# One pod runs api + worker. Raw lives in the Tigris bucket (loltrack#330); the
+# only volume is Postgres's. Worker applies DB migrations on start; the API
+# never does.
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -19,18 +19,6 @@ spec:
   resources:
     requests:
       storage: 20Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: loltrack-raw
-  namespace: loltrack
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -142,7 +130,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: Recreate # RWO volume
+    type: Recreate # one worker by rule (loltrack docs/adr/0001)
   selector:
     matchLabels:
       app: loltrack
@@ -157,8 +145,6 @@ spec:
       #   --docker-server=ghcr.io --docker-username=wardbox --docker-password=<PAT with read:packages>
       imagePullSecrets:
         - name: ghcr-pull
-      securityContext:
-        fsGroup: 1000 # so the nonroot user can write the PVC
       containers:
         - name: api
           # pinned by digest; loltrack's build.yml bumps both image lines on every main build, Argo CD rolls it out
@@ -252,8 +238,6 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["bun", "server/worker.ts"]
           env:
-            - name: RAW_DIR
-              value: /data/raw
             # Ingests are CPU-bound and Postgres-write-heavy; 4 in parallel
             # pinned every core on the CPX21 and starved kubelet/Traefik.
             - name: WORKER_CONCURRENCY
@@ -311,8 +295,6 @@ spec:
           # is Chrome's own shared memory, whose 64MB default in a container is
           # what makes a page renderer die mid-load.
           volumeMounts:
-            - name: raw
-              mountPath: /data
             - name: tmp
               mountPath: /tmp
             - name: dshm
@@ -341,9 +323,6 @@ spec:
               drop:
                 - ALL
       volumes:
-        - name: raw
-          persistentVolumeClaim:
-            claimName: loltrack-raw
         - name: tmp
           emptyDir:
             sizeLimit: 256Mi
