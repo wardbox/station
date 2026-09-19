@@ -178,6 +178,29 @@ spec:
                 secretKeyRef:
                   name: loltrack-env
                   key: RIOT_API_KEY
+            # Raw match and timeline objects live in the Tigris bucket (loltrack#330, its docs/02
+            # "Storage strategy"); both containers read it, the worker writes it. Keys are in the
+            # secret; loltrack's scripts/raw-to-tigris.sh wizard put them there.
+            - name: S3_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_ENDPOINT
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_BUCKET
+            - name: S3_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_ACCESS_KEY_ID
+            - name: S3_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_SECRET_ACCESS_KEY
             # Discord sign-in and the summoner claim (loltrack#155): the site's
             # origin as the browser sees it (the OAuth redirect and the cookies'
             # Secure flag follow it) and the Discord app. The API alone needs them.
@@ -257,6 +280,29 @@ spec:
                 secretKeyRef:
                   name: loltrack-env
                   key: RIOT_API_KEY
+            # Raw match and timeline objects live in the Tigris bucket (loltrack#330, its docs/02
+            # "Storage strategy"); both containers read it, the worker writes it. Keys are in the
+            # secret; loltrack's scripts/raw-to-tigris.sh wizard put them there.
+            - name: S3_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_ENDPOINT
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_BUCKET
+            - name: S3_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_ACCESS_KEY_ID
+            - name: S3_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: loltrack-env
+                  key: S3_SECRET_ACCESS_KEY
           # /tmp and /dev/shm are for the unfurl render's headless Chrome
           # (loltrack#184, #213, #217): the root filesystem stays read-only and
           # these two are the holes in it. /tmp takes the throwaway Chrome
