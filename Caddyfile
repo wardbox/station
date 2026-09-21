@@ -24,6 +24,12 @@
 		respond "for humans only" 403
 	}
 
+	# dylankappler.com is retired; it is this site now. Permanent, path kept.
+	@dk host dylankappler.com www.dylankappler.com
+	handle @dk {
+		redir https://stationsystems.dev{uri} permanent
+	}
+
 	# Katana's public page lives in the same static image, but presents as its own
 	# place at katana.stationsystems.dev. Only the page and its favicon are served
 	# on that host; the rest of the blog stays on the main domain.

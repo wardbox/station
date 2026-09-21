@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getAllPosts, postPath, formatDate } from '../../lib/content';
+
+const posts = await getAllPosts();
+---
+
+<Base title="blog" caseLine={`blog · ${posts.length} ${posts.length === 1 ? 'post' : 'posts'}`}>
+  <h1 class="text-5xl font-light tracking-tight sm:text-7xl">blog</h1>
+  <ul class="mt-20 border-t border-border">
+    {posts.map((p) => (
+      <li class="border-b border-border">
+        <a href={postPath(p)} class="group flex flex-col gap-2 py-6 sm:flex-row sm:items-baseline sm:gap-8">
+          <span class="w-28 shrink-0 font-mono text-xs uppercase tracking-widest text-muted">{formatDate(p.entry.data.date)}</span>
+          <span class="flex-1">
+            <span class="block text-xl font-light tracking-tight group-hover:text-muted">{p.entry.data.title}</span>
+            <span class="mt-1 block text-sm text-muted">{p.entry.data.summary}</span>
+          </span>
+          <span class="font-mono text-xs uppercase tracking-widest text-faint">{p.type}</span>
+        </a>
+      </li>
+    ))}
+    {posts.length === 0 && <li class="py-6 font-mono text-xs uppercase tracking-widest text-muted">nothing filed yet</li>}
+  </ul>
+</Base>

@@ -1,0 +1,34 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('work');
+  return projects.map((p) => ({ params: { slug: p.id }, props: { project: p } }));
+}
+const { project } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+---
+
+<Base title={data.title} description={data.summary} image={data.image} caseLine={`${data.domain} · ${data.status} · ${data.started}`}>
+  <article>
+    <a href="/" class="font-mono text-xs uppercase tracking-widest text-muted hover:text-foreground">← work</a>
+    <h1 class="mt-6 text-5xl font-light tracking-tight sm:text-7xl">{data.title}</h1>
+    <p class="mt-6 max-w-xl text-lg text-muted">{data.summary}</p>
+    <div class="mt-8 flex flex-wrap gap-6 font-mono text-xs uppercase tracking-widest text-muted">
+      {data.url && <a href={data.url} target="_blank" rel="noopener noreferrer" class="hover:text-foreground">{data.domain} ↗</a>}
+      {data.repo && <a href={data.repo} target="_blank" rel="noopener noreferrer" class="hover:text-foreground">source ↗</a>}
+    </div>
+    {data.image && <img src={data.image} alt={data.title} class="mt-12 w-full bg-card" />}
+    <div class="prose mt-20">
+      <Content />
+    </div>
+    <div class="mt-20 border-t border-border pt-6">
+      <h2 class="font-mono text-xs uppercase tracking-widest text-muted">stack</h2>
+      <div class="mt-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-faint">
+        {data.stack.map((s) => <span>{s}</span>)}
+      </div>
+    </div>
+  </article>
+</Base>

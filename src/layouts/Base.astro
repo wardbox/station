@@ -1,29 +1,23 @@
 ---
-// Self-hosted fonts - no external calls at runtime; the build stays hermetic
-// and the field stays confidential-feeling.
-import '@fontsource/ibm-plex-sans/400.css';
-import '@fontsource/ibm-plex-sans/500.css';
-import '@fontsource/ibm-plex-mono/400.css';
-import '../styles/tokens.css';
-import '../styles/base.css';
+import '../styles/global.css';
 import { site } from '../lib/site';
-
-// Preload the latin woff2 used above the fold so they're fetched before first
-// paint - kills the flash of fallback text swapping to our faces. These resolve
-// to the same hashed URLs the @font-face src points at, so the preload is used.
-import bodyFont from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2';
-import bodyMediumFont from '@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-500-normal.woff2';
-import monoFont from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2';
-const preloadFonts = [bodyFont, bodyMediumFont, monoFont];
+import { rev, builtDate } from '../lib/build';
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  caseLine: string;
 }
-const { title, description = site.tagline } = Astro.props;
+const { title, description = site.tagline, image, caseLine } = Astro.props;
 const fullTitle = title ? `${title} · ${site.name}` : site.name;
-// Absolute canonical URL - falls back gracefully before `site` is the real domain.
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const ogImage = image ? new URL(image, Astro.site ?? Astro.url).href : undefined;
+const path = Astro.url.pathname;
+const nav = [
+  { label: 'work', href: '/', current: path === '/' || path.startsWith('/work/') },
+  { label: 'blog', href: '/blog/', current: path.startsWith('/blog/') },
+];
 ---
 
 <!doctype html>
@@ -33,82 +27,46 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {
-      preloadFonts.map((href) => (
-        <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
-      ))
-    }
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title={site.name}
-      href="/rss.xml"
-    />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
     <link rel="canonical" href={canonical} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta name="color-scheme" content="dark" />
-    {/* Social cards - honest title + summary; no image yet (text-first). */}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
   </head>
-  <body>
-    <div class="backdrop" aria-hidden="true"></div>
-    <slot />
-    <script is:inline>
-      // Cause/date insignia. Runtime-gated so the static build ages through the
-      // year without rebuilds or external calls. Overlapping windows stack, so
-      // month-long observances and specific days can coexist.
-      const toDayOfYear = (mmdd) => {
-        const [month, day] = mmdd.split('-').map(Number);
-        return Date.UTC(2000, month - 1, day) / 86400000;
-      };
-      const today = new Date();
-      const dayOfYear = Date.UTC(2000, today.getMonth(), today.getDate()) / 86400000;
-      const previewAll = new URLSearchParams(window.location.search).get('insignia-preview') === 'all';
-      const isOrdinalWeekday = ({ month, weekday, ordinal }) => {
-        if (today.getMonth() + 1 !== month || today.getDay() !== weekday) return false;
-        return Math.floor((today.getDate() - 1) / 7) + 1 === ordinal;
-      };
-      const inWindow = ({ start, end, weekdayOrdinal }) => {
-        if (weekdayOrdinal) return isOrdinalWeekday(weekdayOrdinal);
-        const startDay = toDayOfYear(start);
-        const endDay = toDayOfYear(end);
-        return startDay <= endDay
-          ? dayOfYear >= startDay && dayOfYear <= endDay
-          : dayOfYear >= startDay || dayOfYear <= endDay;
-      };
-      for (const el of document.querySelectorAll('[data-seasonal-insignia]')) {
-        const allEntries = JSON.parse(el.dataset.insignia ?? '[]');
-        const entries = previewAll ? allEntries : allEntries.filter(inWindow);
-        if (!entries.length) continue;
-        document.documentElement.dataset.insignia = entries.map(({ id }) => id).join(' ');
-        el.replaceChildren(
-          ...entries.map((entry) => {
-            const item = document.createElement('a');
-            const label = document.createElement('span');
-            item.className = 'insignia';
-            item.dataset.insigniaId = entry.id;
-            item.href = entry.href;
-            item.target = '_blank';
-            item.rel = 'noopener noreferrer';
-            item.title = entry.label;
-            item.setAttribute('aria-label', `${entry.label} — Wikipedia`);
-            label.className = 'insignia-label';
-            label.textContent = entry.label;
-            item.append(label);
-            return item;
-          }),
-        );
-        el.hidden = false;
-      }
-    </script>
-    <div class="grain" aria-hidden="true"></div>
+  <body class="min-h-screen">
+    <div class="mx-auto flex min-h-screen max-w-4xl flex-col px-6 py-8 sm:px-8">
+      <header>
+        <div class="flex items-baseline justify-between gap-6">
+          <a href="/" class="text-base font-light tracking-tight">{site.name}</a>
+          <nav class="flex gap-5 font-mono text-xs uppercase tracking-widest text-muted" aria-label="Site">
+            {nav.map((n) => (
+              <a href={n.href} class:list={['hover:text-foreground', { 'text-foreground': n.current }]} aria-current={n.current ? 'page' : undefined}>{n.label}</a>
+            ))}
+            {site.links.map((l) => (
+              <a href={l.href} target="_blank" rel="noopener noreferrer" class="hover:text-foreground">{l.label}</a>
+            ))}
+          </nav>
+        </div>
+        <div class="mt-3 flex justify-between gap-4 border-t border-border pt-3 font-mono text-xs uppercase tracking-widest text-muted">
+          <span>{caseLine}</span>
+          <span>{builtDate}</span>
+        </div>
+      </header>
+      <main class="flex-1 pt-20 pb-24">
+        <slot />
+      </main>
+      <footer class="flex justify-between border-t border-border pt-3 font-mono text-xs uppercase tracking-widest text-faint">
+        <span>{site.location}</span>
+        <span>rev {rev}</span>
+      </footer>
+    </div>
   </body>
 </html>

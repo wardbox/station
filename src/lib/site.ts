@@ -1,20 +1,13 @@
-// Site identity - honest words only (design-spec Principle 1).
-// Edit these in one place; the chrome reads from here.
+// Site identity. The chrome reads from here.
 export const site = {
   name: 'station systems',
-  // Person + a plain location label. No seal, no theatre.
-  owner: 'Dylan',
+  tagline: 'Projects and field notes by Dylan Kappler.',
+  fullName: 'Dylan Kappler',
+  role: 'Senior platform engineer at BetterComp. I build web apps on the side and care about how they look.',
   location: 'Kingston, WA',
-  // Real coordinates for the telemetry bar - true, but deliberately coarse
-  // (~1 km). Honest without pointing strangers at the doorstep.
-  coords: '47.79°N 122.49°W',
-  // One honest line. What this place is, said plainly.
-  tagline: 'field notes',
-  // The muted "now -" readout: what you are actually working on.
-  now: 'touching grass',
-  // Keyboard hints shown in the status line. These are really wired on the index.
-  keys: [
-    { kc: 'J / K', label: 'move' },
-    { kc: '↵', label: 'open' },
+  links: [
+    { label: 'github', href: 'https://github.com/wardbox' },
+    { label: 'linkedin', href: 'https://linkedin.com/in/dylankappler' },
+    { label: 'x', href: 'https://x.com/ward_box' },
   ],
 } as const;

@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+/* The numbered house (github.com/wardbox/loltrack, docs/06): warm concrete grays, radius 0,
+   Geist 300 for display, Geist Mono uppercase micro-labels, red as the only signal. Dark by
+   default, the same house by day when the system asks for light. */
+@theme {
+  --font-sans: "Geist Variable", sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-signal: var(--signal);
+  --color-live: var(--live);
+  --radius: 0;
+}
+
+:root {
+  --background: #0f0f0e;
+  --foreground: #e9e7e2;
+  --card: #161615;
+  --border: #262624;
+  --muted: #8e8c86;
+  --faint: #5a5955;
+  --signal: #e8695c;
+  --live: #5cbf8a;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #e3dfd6;
+    --foreground: #1b1a17;
+    --card: #d8d4ca;
+    --border: #c2bdb2;
+    --muted: #625e55;
+    --faint: #9b968b;
+    --signal: #b5322a;
+    --live: #247249;
+    color-scheme: light;
+  }
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  text-wrap: pretty;
+}
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Markdown bodies: project pages and posts. Section headers are the house's mono
+   micro-labels over a hairline; everything else is body text. */
+.prose { max-width: 65ch; }
+.prose h2 {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-top: 5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.prose h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.prose p { margin-top: 1rem; font-size: 1rem; line-height: 1.6; }
+.prose ul { margin-top: 1rem; }
+.prose li { position: relative; padding-left: 1.25rem; line-height: 1.6; margin-top: 0.25rem; }
+.prose ul li::before { content: "·"; position: absolute; left: 0; color: var(--faint); }
+.prose a { text-decoration: underline; text-underline-offset: 0.2em; text-decoration-color: var(--faint); }
+.prose a:hover { text-decoration-color: var(--foreground); }
+.prose code { font-family: var(--font-mono); font-size: 0.875em; color: var(--muted); }
+.prose strong { font-weight: 500; }
+.prose h3 { font-weight: 400; font-size: 1.125rem; margin-top: 2rem; }
+.prose ol { margin-top: 1rem; counter-reset: item; }
+.prose ol li::before { counter-increment: item; content: counter(item); position: absolute; left: 0; font-family: var(--font-mono); font-size: 0.75rem; color: var(--faint); top: 0.2em; }
+.prose em { font-style: italic; }
+.prose blockquote { margin-top: 1rem; padding-left: 1rem; border-left: 1px solid var(--border); color: var(--muted); }
+.prose pre { margin-top: 1rem; padding: 1rem; background: var(--card); font-size: 0.8125rem; line-height: 1.6; overflow-x: auto; }
+.prose pre code { color: inherit; font-size: inherit; }
+.prose hr { margin-top: 2rem; border: 0; border-top: 1px solid var(--border); }
+.prose img { margin-top: 2rem; width: 100%; background: var(--card); }
+.prose figure { margin-top: 3rem; }
+.prose figure img { margin-top: 0; }
+.prose figcaption { margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--faint); }
+
+/* Shiki writes its theme background inline; code sits on the slab like everything else. */
+.prose .astro-code { background-color: var(--card) !important; }

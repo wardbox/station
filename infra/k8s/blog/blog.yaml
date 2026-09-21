@@ -105,3 +105,42 @@ spec:
                 name: blog
                 port:
                   number: 80
+---
+# dylankappler.com is retired and redirects to stationsystems.dev (the Caddyfile
+# answers the host). Gandi holds the domain, so HTTP-01 through Traefik for the
+# cert, as numbered.gg does. Both A records point at the node.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blog-dylankappler
+  namespace: blog
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http01
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - dylankappler.com
+        - www.dylankappler.com
+      secretName: dylankappler-com-tls
+  rules:
+    - host: dylankappler.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blog
+                port:
+                  number: 80
+    - host: www.dylankappler.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blog
+                port:
+                  number: 80
