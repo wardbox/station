@@ -120,6 +120,43 @@ spec:
       port: 5432
       targetPort: pg
 ---
+# Offline holding page (loltrack docs/07 item 7): the production key application
+# was rejected 2026-09-18 and a public site on a development key is outside the
+# terms, so the API serves this page and the worker sleeps until Riot answers.
+# Revert this commit to bring the site back.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loltrack-offline
+  namespace: loltrack
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>numbered</title>
+    <style>
+      html { background: #1c1c1c; color: #d6d4cf; font: 300 16px/1.5 system-ui, sans-serif; }
+      body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+      main { padding: 15vh 8vw 0; }
+      h1 { font-weight: 300; font-size: 2.5rem; margin: 0 0 1rem; letter-spacing: -0.02em; }
+      p { max-width: 36rem; margin: 0; }
+      .label { font-family: ui-monospace, monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #8e8c86; margin-bottom: 1rem; }
+      footer { padding: 2rem 8vw; border-top: 1px solid #333; font-size: 0.7rem; color: #8e8c86; }
+    </style>
+    </head>
+    <body>
+    <main>
+      <div class="label">Offline</div>
+      <h1>numbered</h1>
+      <p>numbered is offline while we wait on Riot's review of the site. Cards and collections are kept and come back with it.</p>
+    </main>
+    <footer>numbered isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</footer>
+    </body>
+    </html>
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -150,6 +187,8 @@ spec:
           # pinned by digest; loltrack's build.yml bumps both image lines on every main build, Argo CD rolls it out
           image: ghcr.io/wardbox/loltrack@sha256:f484359c0741884418609561b0baab3b5f3e1f20694c9e3025d047ffe6f3d7c6
           imagePullPolicy: IfNotPresent
+          # Offline: every path answers the holding page (see the loltrack-offline ConfigMap).
+          command: ["bun", "-e", "Bun.serve({ port: 3000, fetch: () => new Response(Bun.file('/offline/index.html')) })"]
           ports:
             - name: http
               containerPort: 3000
@@ -225,6 +264,10 @@ spec:
               port: http
             initialDelaySeconds: 5
             periodSeconds: 20
+          volumeMounts:
+            - name: offline
+              mountPath: /offline
+              readOnly: true
           resources:
             requests:
               cpu: 50m
@@ -246,7 +289,8 @@ spec:
         - name: worker
           image: ghcr.io/wardbox/loltrack@sha256:f484359c0741884418609561b0baab3b5f3e1f20694c9e3025d047ffe6f3d7c6
           imagePullPolicy: IfNotPresent
-          command: ["bun", "server/worker.ts"]
+          # Offline: no Riot API calls until the key question is settled. Was ["bun", "server/worker.ts"].
+          command: ["sleep", "infinity"]
           env:
             # Ingests are CPU-bound and Postgres-write-heavy; 4 in parallel
             # pinned every core on the CPX21 and starved kubelet/Traefik.
@@ -343,6 +387,9 @@ spec:
               drop:
                 - ALL
       volumes:
+        - name: offline
+          configMap:
+            name: loltrack-offline
         - name: tmp
           emptyDir:
             sizeLimit: 256Mi
