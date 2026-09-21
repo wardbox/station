@@ -16,3 +16,23 @@ const { data } = post.entry;
 <h1 class="mb-[34px] font-display text-[clamp(42px,6vw,58px)] font-medium leading-[0.98] tracking-[-0.01em] max-[560px]:text-[38px]">
   {data.title}
 </h1>
+{
+  data.domain && (
+    <div class="-mt-[18px] mb-[34px] flex flex-wrap gap-x-5 gap-y-1 font-mono text-xs tracking-[0.05em] text-faint">
+      {data.url ? (
+        <a class="hover:text-text" href={data.url} target="_blank" rel="noopener noreferrer">
+          {data.domain} <span class="text-accent">&nearr;</span>
+        </a>
+      ) : (
+        <span>{data.domain}</span>
+      )}
+      {data.repo && (
+        <a class="hover:text-text" href={data.repo} target="_blank" rel="noopener noreferrer">
+          source <span class="text-accent">&nearr;</span>
+        </a>
+      )}
+      {data.status && <span class="uppercase">{data.live ? <span class="text-live">live</span> : data.status}</span>}
+    </div>
+  )
+}
+{data.image && <img class="mb-[34px] w-full border border-hairline" src={data.image} alt={data.title} />}

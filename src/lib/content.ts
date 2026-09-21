@@ -1,18 +1,20 @@
 import { existsSync } from 'node:fs';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
-// The three sections, in display order.
-export const POST_TYPES = ['writing', 'builds', 'notes'] as const;
+// The four sections, in display order. Work is the portfolio: the sites, one page each.
+export const POST_TYPES = ['work', 'writing', 'builds', 'notes'] as const;
 export type PostType = (typeof POST_TYPES)[number];
 
 // Tracked-caps labels live in the chrome; the proper-case names live here.
 export const TYPE_LABEL: Record<PostType, string> = {
+  work: 'Work',
   writing: 'Writing',
   builds: 'Builds',
   notes: 'Notes',
 };
 
 export type AnyEntry =
+  | CollectionEntry<'work'>
   | CollectionEntry<'writing'>
   | CollectionEntry<'builds'>
   | CollectionEntry<'notes'>;
@@ -60,13 +62,16 @@ export const sectionPath = (type: PostType) => `/${type}/`;
 export const postPath = (p: Post) => `${sectionPath(p.type)}${p.entry.id.replace(/\.md$/, '')}`;
 
 // "08 Jun 2026" - post eyebrow; terse, unambiguous, no comma.
+// Frontmatter dates parse as UTC midnight, so they are read back in UTC too;
+// a Pacific build was printing every post a day early.
 const fmt = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit',
   month: 'short',
   year: 'numeric',
+  timeZone: 'UTC',
 });
 export const formatDate = (d: Date) => fmt.format(d);
 
 // "06·08" (MM·DD) - the tight mono readout used in lists.
 const p2 = (n: number) => String(n).padStart(2, '0');
-export const formatShort = (d: Date) => `${p2(d.getMonth() + 1)}·${p2(d.getDate())}`;
+export const formatShort = (d: Date) => `${p2(d.getUTCMonth() + 1)}·${p2(d.getUTCDate())}`;

@@ -2,7 +2,7 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 // One schema across every section. A post is a post; the section it sits in
-// (writing / builds / notes) is the only difference. Drop a .md file in the
+// (work / writing / builds / notes) is the only difference. Drop a .md file in the
 // right folder and it shows up - "posting is a git push" (build-spec).
 const post = z.object({
   title: z.string(),
@@ -16,6 +16,13 @@ const post = z.object({
   // Genuine live/now status only - earns the distinct status color.
   live: z.boolean().default(false),
   draft: z.boolean().default(false),
+  // Work entries only (the portfolio): where it runs, where the code is, what
+  // state it is in, one picture. A post without these is an ordinary post.
+  domain: z.string().optional(),
+  url: z.string().url().optional(),
+  repo: z.string().url().optional(),
+  status: z.enum(['live', 'offline', 'archived']).optional(),
+  image: z.string().optional(),
 });
 
 const section = (dir: string) =>
@@ -25,6 +32,7 @@ const section = (dir: string) =>
   });
 
 export const collections = {
+  work: section('work'),
   writing: section('writing'),
   builds: section('builds'),
   notes: section('notes'),

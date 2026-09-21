@@ -5,7 +5,8 @@ import { getAllPosts, postPath, TYPE_LABEL } from '../lib/content';
 import { site } from '../lib/site';
 
 export async function GET(context: APIContext) {
-  const posts = await getAllPosts();
+  // Work entries are pages about the sites, not posts; the feed carries the writing.
+  const posts = (await getAllPosts()).filter((p) => p.type !== 'work');
   return rss({
     title: site.name,
     description: site.tagline,
