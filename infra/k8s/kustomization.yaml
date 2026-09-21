@@ -4,6 +4,7 @@ resources:
   - blog/blog.yaml
   - hansard/hansard.yaml
   - loltrack/loltrack.yaml
+  - devsite/devsite.yaml
   - argocd/server-tls.yaml
   - tailscale/namespace.yaml
   - tailscale/operator.yaml
