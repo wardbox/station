@@ -16,6 +16,8 @@ Stats sites show you the numbers from a game and stop there. numbered turns the 
 
 I built it in three weeks in September 2026. Riot rejected the production API key, so the site is offline for now. Details at the bottom.
 
+![The landing: the wordmark drawn in digits and a ring of cards turning](/work/numbered-landing.jpg)
+
 ## The card
 
 - Rank, region and queue on the banner. The champion splash is the art.
@@ -23,6 +25,10 @@ I built it in three weeks in September 2026. Riot rejected the production API ke
 - A playstyle label from six behaviour clusters fit over the crawled ladder.
 - The verdict from your last game, priced from the timeline. "Lost from ahead. 87% to win at 14:00. Biggest swing: the cloud dragon at 30:43, about a fifth of the game."
 - No rank estimates from a model. Riot policy prohibits them and I think the rule is right.
+
+![A player's card page: the live card, drag to spin, downloads for the front and back](/work/numbered-card.jpg)
+
+![The profile behind the card: record, the latest ruling, every game with its verdict and win chance curve](/work/numbered-profile.jpg)
 
 ## Prints and packs
 
@@ -32,6 +38,8 @@ I built it in three weeks in September 2026. Riot rejected the production API ke
 - Claiming your account grants a welcome pack of three prints from games you already won. Prints have no price and cannot be traded.
 - Every print has its own page. Pasting the link into a chat shows a rendered picture of the card.
 
+![A print's own page: an illustration rare of a Chinese-client player, the game it was printed from underneath](/work/numbered-print.jpg)
+
 ## Collection, shelf, wall
 
 - Your collection lists every print you hold, filterable by champion and rarity.
@@ -39,6 +47,10 @@ I built it in three weeks in September 2026. Riot rejected the production API ke
 - The wall is a directory of every claimed player, sorted by how many of their prints are held. Unclaimed players never appear in any index.
 - Sets group prints by season. The legend page names every part of a card.
 - The card maker at /make builds a card from any splash and shares it as a link. No account needed.
+
+![The wall: claimed players ranked by how many hold their card](/work/numbered-wall.jpg)
+
+![The card maker: a card from any splash, any foil, any words](/work/numbered-make.jpg)
 
 ## How it works
 
@@ -48,9 +60,13 @@ Each game timeline becomes a feature row with a version stamp, and re-extraction
 
 Player IDs never leave the server. Deleting a player cascades through every table, since Riot forwards GDPR requests. Raw match data lives in a Tigris bucket. The site runs on one k3s node with Argo CD deploying digest pinned images from CI.
 
+![A match page: the verdict, the win chance curve with every priced event on it, the two costliest deaths with the damage that killed you](/work/numbered-match.jpg)
+
 ## Design
 
 Warm concrete grays, no border radius, Geist 300 for display type, monospace uppercase labels, red as the only signal colour. Dark by default with a light theme on request. Cards keep their dark stock in both.
+
+![The legend: every part of a print named, and the odds of each tier](/work/numbered-legend.jpg)
 
 ## What happened
 

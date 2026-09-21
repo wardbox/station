@@ -91,6 +91,9 @@ body {
 .prose pre code { color: inherit; font-size: inherit; }
 .prose hr { margin-top: 2rem; border: 0; border-top: 1px solid var(--border); }
 .prose img { margin-top: 2rem; width: 100%; background: var(--card); }
+.prose figure { margin-top: 3rem; }
+.prose figure img { margin-top: 0; }
+.prose figcaption { margin-top: 0.75rem; font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--faint); }
 
 /* Shiki writes its theme background inline; code sits on the slab like everything else. */
 .prose .astro-code { background-color: var(--card) !important; }
