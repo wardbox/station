@@ -1,88 +1,37 @@
 ---
 import Base from '../layouts/Base.astro';
-import Telemetry from '../components/Telemetry.astro';
-import Header from '../components/Header.astro';
-import Tabs from '../components/Tabs.astro';
-import SectionIndex from '../components/SectionIndex.astro';
-import StatusLine from '../components/StatusLine.astro';
-import { getSections } from '../lib/content';
+import { getWork } from '../lib/content';
 import { site } from '../lib/site';
 
-const sections = await getSections();
+const projects = await getWork();
 ---
 
-<Base>
-  <main class="field">
-    <Telemetry />
-    <Header />
-    <div class="px-6 pb-6 pt-0">
-      <div class="mb-8 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-hairline pb-6">
-        <div class="max-w-[52ch]">
-          <div class="font-display text-lg font-medium text-text">{site.fullName}</div>
-          <p class="mt-1 text-sm text-faint">{site.role}</p>
-        </div>
-        <nav class="flex gap-4 font-mono text-xs tracking-[0.05em] text-faint" aria-label="Elsewhere">
-          {site.links.map((l) => (
-            <a class="hover:text-text" href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
-          ))}
-        </nav>
-      </div>
-      <Tabs sections={sections} />
-      <SectionIndex sections={sections} limit={4} />
-      <StatusLine />
-    </div>
-  </main>
+<Base caseLine={`portfolio · ${site.location}`}>
+  <section>
+    <h1 class="text-5xl font-light tracking-tight sm:text-7xl">
+      {site.fullName.split(' ')[0]} <span class="text-signal">{site.fullName.split(' ').slice(1).join(' ')}</span>
+    </h1>
+    <p class="mt-6 max-w-xl text-lg text-muted">{site.role}</p>
+  </section>
+
+  <section class="mt-20 border-t border-border pt-6">
+    <h2 class="font-mono text-xs uppercase tracking-widest text-muted">work</h2>
+    <ul class="mt-6 flex flex-col gap-px bg-border">
+      {projects.map(({ id, data }) => (
+        <li class="bg-background">
+          <a href={`/work/${id}/`} class="group block bg-card p-6 transition-colors hover:bg-background">
+            <div class="flex items-baseline justify-between gap-4 font-mono text-xs uppercase tracking-widest text-muted">
+              <span>{data.domain}</span>
+              <span class:list={[{ 'text-signal': data.status === 'offline', 'text-live': data.status === 'live' }]}>{data.status} · {data.started}</span>
+            </div>
+            <h3 class="mt-4 text-3xl font-light tracking-tight">{data.title}</h3>
+            <p class="mt-2 max-w-xl text-sm text-muted">{data.summary}</p>
+            <div class="mt-6 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-faint">
+              {data.stack.map((s) => <span>{s}</span>)}
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
 </Base>
-
-<script>
-  // Real section filters - clicking a tab shows only that section. Default is
-  // "all". Progressive enhancement; without JS every section is visible.
-  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.tab'));
-  const cols = Array.from(
-    document.querySelectorAll<HTMLElement>('.col[data-section]'),
-  );
-  for (const tab of tabs) {
-    tab.addEventListener('click', () => {
-      const filter = tab.dataset.filter;
-      for (const t of tabs)
-        t.setAttribute('aria-current', String(t === tab));
-      for (const col of cols)
-        col.hidden = filter !== 'all' && col.dataset.section !== filter;
-    });
-  }
-
-  // Honest keybinds - the status line says J/K move, Enter opens, so they do.
-  // Vim convention: j / ArrowDown move down the list, k / ArrowUp move up.
-  // Position is read from the focused element each press, so it can't drift.
-  const items = () =>
-    Array.from(
-      document.querySelectorAll<HTMLAnchorElement>('.entry[href]'),
-    ).filter((r) => r.offsetParent !== null);
-
-  const move = (delta: 1 | -1) => {
-    const list = items();
-    if (!list.length) return;
-    const cur = list.indexOf(document.activeElement as HTMLAnchorElement);
-    // Nothing focused yet: j starts at the top, k starts at the bottom.
-    const next =
-      cur === -1
-        ? delta === 1
-          ? 0
-          : list.length - 1
-        : Math.max(0, Math.min(list.length - 1, cur + delta));
-    list[next].focus();
-  };
-
-  document.addEventListener('keydown', (e) => {
-    const tag = (e.target as HTMLElement)?.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-    if (e.key === 'j' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      move(1); // down
-    } else if (e.key === 'k' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      move(-1); // up
-    }
-    // Enter on a focused entry follows the link natively.
-  });
-</script>

@@ -1,13 +1,14 @@
 ---
 title: Spotishell
-date: 2018-12-12
 summary: The Spotify Web API as a PowerShell module. About 80 cmdlets, OAuth handled, playback from a terminal.
 stack: [powershell, spotify web api, pester]
 domain: PowerShell Gallery
 url: https://www.powershellgallery.com/packages/Spotishell
 repo: https://github.com/wardbox/spotishell
-status: archived
+status: repo
 image: /work/spotishell.png
+started: 2018-12
+order: 4
 ---
 
 ## What it is

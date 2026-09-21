@@ -1,6 +1,5 @@
 ---
 title: numbered
-date: 2026-09-02
 summary: A League of Legends trading card site backed by real ranked games. One card per player, a print of the opponent when you win, a verdict on every print.
 stack: [bun, hono, react, drizzle, postgres, xgboost, k3s, argo cd]
 domain: numbered.gg
@@ -8,6 +7,8 @@ url: https://numbered.gg
 repo: https://github.com/wardbox/loltrack
 status: offline
 image: /work/numbered-cards.png
+started: 2026-09
+order: 1
 ---
 
 ## What it is

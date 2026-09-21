@@ -1,22 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import Telemetry from '../components/Telemetry.astro';
-import Topbar from '../components/Topbar.astro';
 ---
-
-<Base title="404">
-  <main class="field">
-    <Telemetry />
-    <Topbar />
-    <div class="px-[var(--pad-x)] pb-12 pt-10">
-      <p class="label mb-2.5 text-[#cfd2d0]">404 &middot; not found</p>
-      <h1 class="mb-3 font-display text-[34px] font-medium leading-[1.05] tracking-[0.01em]">
-        nothing&rsquo;s filed here.
-      </h1>
-      <p class="mb-6 max-w-[46ch] text-faint">
-        that page doesn&rsquo;t exist, or never did. The index has everything that does.
-      </p>
-      <a class="font-mono text-xs tracking-[0.05em] text-faint hover:text-text" href="/"><span class="text-accent">&larr;</span> back to index</a>
-    </div>
-  </main>
+<Base title="404" caseLine="404 · not found">
+  <h1 class="text-5xl font-light tracking-tight sm:text-7xl">nothing here</h1>
+  <a href="/" class="mt-6 inline-block font-mono text-xs uppercase tracking-widest text-muted hover:text-foreground">← work</a>
 </Base>

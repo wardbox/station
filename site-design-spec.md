@@ -1,5 +1,10 @@
 # Site — design spec
 
+> Superseded 2026-09-21. The site now follows the numbered house (github.com/wardbox/loltrack,
+> docs/06-design.md): concrete grays, radius 0, Geist 300 display, mono uppercase micro-labels,
+> red as the only signal. Tokens and prose rules live in `src/styles/global.css`. The text below
+> is the earlier direction, kept for history.
+
 A spec of *intent*, not orders. Each rule states the reasoning so new decisions
 can be derived from principle instead of looked up. If a choice isn't covered
 here, ask: "what would keep the interface honest, restrained, and precise?" and

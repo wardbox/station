@@ -1,14 +1,14 @@
 ---
 title: Scout Ahead
-date: 2024-08-24
 summary: A real time League of Legends draft tool. Two captains, one link, fearless mode, spectators, and a timer the server owns.
 stack: [wasp, react, node, prisma, postgres, redis, socket.io, stripe, fly.io]
 domain: scoutahead.pro
 url: https://scoutahead.pro
 repo: https://github.com/wardbox/scout-ahead
 status: live
-live: true
 image: /work/scoutahead.png
+started: 2024-08
+order: 2
 ---
 
 ## What it is

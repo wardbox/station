@@ -1,12 +1,13 @@
 ---
 title: what i spent
-date: 2025-04-11
 summary: Personal finance with one question. What did I spend today, this week and this month. Bank sync through Plaid, billing through Stripe.
 stack: [wasp, react, node, prisma, postgres, plaid, stripe, fly.io]
 domain: whatispent.com
 repo: https://github.com/wardbox/whatispent
 status: archived
 image: /work/whatispent.png
+started: 2025-04
+order: 3
 ---
 
 ## What it is

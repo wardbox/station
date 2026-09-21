@@ -1,12 +1,11 @@
-// The feed - "drop a post, push" only matters if people can follow it.
+// The feed carries the blog. Work entries are pages about the sites, not posts.
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
-import { getAllPosts, postPath, TYPE_LABEL } from '../lib/content';
+import { getAllPosts, postPath } from '../lib/content';
 import { site } from '../lib/site';
 
 export async function GET(context: APIContext) {
-  // Work entries are pages about the sites, not posts; the feed carries the writing.
-  const posts = (await getAllPosts()).filter((p) => p.type !== 'work');
+  const posts = await getAllPosts();
   return rss({
     title: site.name,
     description: site.tagline,
@@ -16,7 +15,7 @@ export async function GET(context: APIContext) {
       pubDate: p.entry.data.date,
       description: p.entry.data.summary,
       link: postPath(p),
-      categories: [TYPE_LABEL[p.type], ...(p.entry.data.filed ?? [])],
+      categories: [p.type, ...(p.entry.data.filed ?? [])],
     })),
     customData: `<language>en-us</language>`,
   });
