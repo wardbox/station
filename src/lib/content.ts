@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 // The four sections, in display order. Work is the portfolio: the sites, one page each.
@@ -25,6 +25,16 @@ export interface Post {
   entry: AnyEntry;
 }
 
+// A section with no Markdown yet is skipped before getCollection, which warns
+// on an empty collection at every page.
+const sectionHasEntries = (type: PostType) => {
+  try {
+    return readdirSync(`src/content/${type}`).some((f) => f.endsWith('.md'));
+  } catch {
+    return false;
+  }
+};
+
 const entryExists = (type: PostType, entry: AnyEntry) =>
   existsSync(`src/content/${type}/${entry.id}`) ||
   existsSync(`src/content/${type}/${entry.id}.md`);
@@ -35,6 +45,7 @@ const entryExists = (type: PostType, entry: AnyEntry) =>
 export async function getAllPosts(): Promise<Post[]> {
   const all: Post[] = [];
   for (const type of POST_TYPES) {
+    if (!sectionHasEntries(type)) continue;
     const entries = await getCollection(type);
     for (const entry of entries) {
       if (!entryExists(type, entry)) continue;
