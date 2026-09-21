@@ -1,6 +1,6 @@
 # loltrack / numbered.gg — League stats site (github.com/wardbox/loltrack).
 # Image is built by that repo's Actions; this manifest owns deploy.
-# One pod runs api + worker. Raw lives in the Tigris bucket (loltrack#330); the
+# One pod runs api + worker (worker removed while offline, see the loltrack-offline ConfigMap). Raw lives in the Tigris bucket (loltrack#330); the
 # only volume is Postgres's. Worker applies DB migrations on start; the API
 # never does.
 apiVersion: v1
@@ -286,117 +286,10 @@ spec:
             capabilities:
               drop:
                 - ALL
-        - name: worker
-          image: ghcr.io/wardbox/loltrack@sha256:f484359c0741884418609561b0baab3b5f3e1f20694c9e3025d047ffe6f3d7c6
-          imagePullPolicy: IfNotPresent
-          # Offline: no Riot API calls until the key question is settled. Was ["bun", "server/worker.ts"].
-          command: ["sleep", "infinity"]
-          env:
-            # Ingests are CPU-bound and Postgres-write-heavy; 4 in parallel
-            # pinned every core on the CPX21 and starved kubelet/Traefik.
-            - name: WORKER_CONCURRENCY
-              value: "1"
-            # The whole ladder (CRAWL unset): 250 per division Iron through Diamond
-            # and 1,000 per apex tier, ~10,000 matches, ~6GB of Postgres and raw on
-            # the 75GB root disk. Diamond and Emerald filled 2026-09-06 with the
-            # node at 63 to 68% once the two leaks were gone (loltrack#172, #177,
-            # #179). Set "0" to stop, or a tier list to narrow, if `kubectl top
-            # node` climbs past 80%.
-            # A chunk of 25 takes about a minute; the five-minute default pause was
-            # for a Postgres working set that turned out to be cached plans
-            # (loltrack#177) and a whisper cache leak (loltrack#179), both gone.
-            # One minute keeps the yield to user searches and ~4x the pace.
-            - name: CRAWL_PAUSE
-              value: "1"
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: loltrack-env
-                  key: DATABASE_URL
-            - name: RIOT_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: loltrack-env
-                  key: RIOT_API_KEY
-            # Raw match and timeline objects live in the Tigris bucket (loltrack#330, its docs/02
-            # "Storage strategy"); both containers read it, the worker writes it. Keys are in the
-            # secret; loltrack's scripts/raw-to-tigris.sh wizard put them there.
-            - name: S3_ENDPOINT
-              valueFrom:
-                secretKeyRef:
-                  name: loltrack-env
-                  key: S3_ENDPOINT
-            - name: S3_BUCKET
-              valueFrom:
-                secretKeyRef:
-                  name: loltrack-env
-                  key: S3_BUCKET
-            - name: S3_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: loltrack-env
-                  key: S3_ACCESS_KEY_ID
-            - name: S3_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: loltrack-env
-                  key: S3_SECRET_ACCESS_KEY
-            - name: S3_PICTURES_BUCKET
-              valueFrom:
-                secretKeyRef:
-                  name: loltrack-env
-                  key: S3_PICTURES_BUCKET
-            - name: S3_PICTURES_URL
-              valueFrom:
-                secretKeyRef:
-                  name: loltrack-env
-                  key: S3_PICTURES_URL
-          # /tmp and /dev/shm are for the unfurl render's headless Chrome
-          # (loltrack#184, #213, #217): the root filesystem stays read-only and
-          # these two are the holes in it. /tmp takes the throwaway Chrome
-          # profile, and its HOME, which is where the crash handler wants its
-          # database (the image's /home/bun is on the read-only root); /dev/shm
-          # is Chrome's own shared memory, whose 64MB default in a container is
-          # what makes a page renderer die mid-load.
-          volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-            - name: dshm
-              mountPath: /dev/shm
-          resources:
-            requests:
-              cpu: 250m
-              memory: 768Mi
-            limits:
-              cpu: "1"
-              # 768Mi is the ingest's ceiling: OOMKilled at 512Mi mid-crawl on
-              # 2026-09-05 at concurrency 4; 543Mi seen at concurrency 1 on
-              # 2026-09-06 before chunking (loltrack#172). 1Gi leaves room for a
-              # render's Chrome, a few hundred MB for a couple of seconds, on top
-              # of an ingest. The request is unchanged, so scheduling is too.
-              memory: 1Gi
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            seccompProfile:
-              type: RuntimeDefault
-            capabilities:
-              drop:
-                - ALL
       volumes:
         - name: offline
           configMap:
             name: loltrack-offline
-        - name: tmp
-          emptyDir:
-            sizeLimit: 256Mi
-        - name: dshm
-          emptyDir:
-            medium: Memory
-            sizeLimit: 128Mi
 ---
 apiVersion: v1
 kind: Service
