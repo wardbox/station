@@ -4,7 +4,6 @@ summary: A real time League of Legends draft tool. Two captains, one link, fearl
 stack: [wasp, react, node, prisma, postgres, redis, socket.io, stripe, fly.io]
 domain: scoutahead.pro
 url: https://scoutahead.pro
-repo: https://github.com/wardbox/scout-ahead
 status: live
 image: /work/scoutahead.png
 started: 2024-08

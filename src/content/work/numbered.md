@@ -4,7 +4,6 @@ summary: A League of Legends trading card site backed by real ranked games. One 
 stack: [bun, hono, react, drizzle, postgres, xgboost, k3s, argo cd]
 domain: numbered.gg
 url: https://numbered.gg
-repo: https://github.com/wardbox/loltrack
 status: offline
 image: /work/numbered-cards.png
 started: 2026-09
