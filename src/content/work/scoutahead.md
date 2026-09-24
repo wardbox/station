@@ -1,40 +1,41 @@
 ---
 title: Scout Ahead
-summary: A real time League of Legends draft tool. Two captains, one link, fearless mode, spectators, and a timer the server owns.
+summary: A real time League of Legends draft tool. Two captains draft from one shared link, spectators watch, and the server keeps the timer.
 stack: [wasp, react, node, prisma, postgres, redis, socket.io, stripe, fly.io]
 domain: scoutahead.pro
 url: https://scoutahead.pro
 status: live
 image: /work/scoutahead.png
-started: 2024-08
+started: 2025-01
 order: 2
 ---
 
 ## What it is
 
-Scout Ahead is a draft screen for amateur leagues and scrim teams. Create a series, share one link, and whoever opens it picks a side and drafts. Spectators watch live. No account is required for any of it. Live since January 2025.
+Scout Ahead is a draft screen for amateur leagues and scrim teams. You create a series and share one link. Whoever opens it picks a side and drafts, and anyone else can watch live. You don't need an account to create, draft or spectate. It's been live since January 2025.
 
 ## Features
 
-- Best of 1, 3, 5 or 7. Sides swap between games. The series winner is computed from game results and never stored.
-- Fearless draft per game. Champions picked in any earlier game of the series are locked, whether or not the earlier game was fearless. Ironman extends the lock to bans.
-- The full 20 action sequence with phase timers. When a timer expires the previewed champion locks, or an empty slot if there was no preview.
-- Corrections. A captain proposes a champion for a missed slot and the opposing captain accepts or declines. Nothing rewinds.
-- Fearless flip proposals, ready checks, a scrim block to keep a set of champions out of the whole series, and replay of any pending proposal on reconnect.
-- A series page with results. Anyone in the room reports a winner, each team confirms for its own record, and a result from a higher trust source replaces a self reported one visibly.
-- Teams with invites and rosters. Sharing match data is a per member choice with two flags. Team owners cannot override it.
-- A champion tier list and a broadcast layout built for OBS at 1080p, with a link builder for casters.
-- A public API for league organizers. Drafts are the billing unit, 2000 a month on the plan, with overage metered through Stripe.
-- Discord sign in for people who want their series kept. Reports and moderation for people who misbehave.
+- Best of 1, 3, 5 or 7, with sides picked each game. The series winner is worked out from the game results and never stored on its own.
+- Fearless draft per game. Any champion picked in an earlier game of the series is locked, even if that earlier game wasn't fearless. Ironman locks bans too.
+- The full 20 action pick and ban sequence with phase timers. If a timer runs out, whatever champion the captain was hovering locks in. If they weren't hovering anything, the slot stays empty.
+- Corrections for empty slots. A captain proposes a champion for the slot and the other captain accepts or declines. Nothing gets rewound.
+- Proposals to flip fearless on or off, ready checks, and a list of disabled champions the series creator picks up front. If you disconnect with a proposal pending, it comes back when you reconnect.
+- Scrim block, which plays every game of the series even after one team has clinched it.
+- A series page with results. Anyone in the room can report a winner, each team confirms for its own record, and a result from a more trusted source replaces a self reported one where you can see it.
+- Teams with invites and rosters. Each member decides whether their match data gets shared with the team and whether it's public, and the team owner can't override that.
+- A champion tier list, plus a broadcast layout built for OBS at 1080p with a link builder for casters.
+- A public API for league organizers. Billing is per draft, 2000 a month on the plan, and anything over that gets metered through Stripe.
+- Discord sign in if you want your series saved, and reports and moderation for when people misbehave.
 
 ## How it works
 
-The timer was the hard part. The source of truth is an absolute expiry timestamp in Postgres. Remaining time is computed from it and never decremented in memory, so it survives restarts and reads the same on every client. Redis holds a best effort lock so one server instance owns the countdown, plus shared preview and ready state. The socket.io Redis adapter fans events across instances. Exactly once auto action comes from a unique constraint on game and position: if two instances fire, one write wins.
+The timer was the hardest part. Postgres stores the moment each timer expires, and the remaining time gets calculated from that instead of counted down in memory. That way it survives a restart and every client sees the same number. Redis holds a best effort lock so one server instance owns the countdown, and it also keeps the shared hover and ready state. The socket.io Redis adapter sends events across instances. To make sure an auto pick only happens once, there's a unique constraint on game and position, so if two instances fire at the same time only one write goes through.
 
-On startup the server queries in progress games with a live timer and resumes or auto acts. The Redis lock stays out of the recovery path on purpose.
+On startup the server looks for games in progress with a live timer and either resumes the countdown or makes the auto pick. It never waits on the Redis lock to do this, it takes the lock over.
 
-Champion data and splash art sync from Data Dragon into S3 on a schedule. The product is registered and approved with Riot. A production key with Riot sign on is in review.
+Champion data syncs from Data Dragon into Postgres every hour, and splash art gets copied to S3 once a day. The product is registered and approved with Riot, and I've applied for a production key with Riot sign on.
 
 ## Design
 
-The design language is called Cinema. Graded splash art carries the identity, one glacier accent colour handles every highlight, and nothing static glows. The draft screen puts function first because it is the screen people put in OBS.
+I call the design language Cinema. Graded splash art does most of the work, one glacier accent colour covers every highlight, and nothing glows unless it's changing. The draft screen is plain on purpose because it's the screen people put in OBS.
