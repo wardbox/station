@@ -14,6 +14,8 @@ order: 2
 
 Scout Ahead is a draft screen for amateur leagues and scrim teams. You create a series and share one link. Whoever opens it picks a side and drafts, and anyone else can watch live. You don't need an account to create, draft or spectate. It's been live since January 2025.
 
+![Opening the draft link: pick a team, or watch as a spectator](/work/scoutahead-join.jpg)
+
 ## Features
 
 - Best of 1, 3, 5 or 7, with sides picked each game. The series winner is worked out from the game results and never stored on its own.
@@ -27,6 +29,12 @@ Scout Ahead is a draft screen for amateur leagues and scrim teams. You create a 
 - A champion tier list, plus a broadcast layout built for OBS at 1080p with a link builder for casters.
 - A public API for league organizers. Billing is per draft, 2000 a month on the plan, and anything over that gets metered through Stripe.
 - Discord sign in if you want your series saved, and reports and moderation for when people misbehave.
+
+![Blue's third pick with Taliyah hovered and 29 seconds left on the clock](/work/scoutahead-hover.jpg)
+
+![The finished draft from the spectator's screen](/work/scoutahead-draft.jpg)
+
+![The series overview: both teams' picks and bans, and the full pick and ban order along the bottom](/work/scoutahead-overview.jpg)
 
 ## How it works
 
