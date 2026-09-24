@@ -12,7 +12,7 @@ order: 1
 
 ## What it is
 
-numbered turns your League games into a trading card. Every player gets one card built from their match history, and it updates as you play. Once you claim your account, every game you win against your lane opponent prints a copy of their card for you. Prints come sealed in packs, and each one carries a short verdict on what decided the game it came from.
+numbered turns your League games into a trading card. Every player gets one card built from their match history, and it updates as you play. Once you claim your account, winning a ranked or normal game against your lane opponent prints a copy of their card for you. Prints come sealed in packs, and each one carries a short verdict on what decided the game it came from.
 
 I built it in about three weeks in September 2026. Riot rejected the production API key, so the site is offline for now. More on that at the bottom.
 
@@ -52,7 +52,7 @@ Your collection shows one card per player you hold, with your best print face up
 
 The shelf is three graded cases on a concrete mantel with light coming in from a window. You drag cases to swap them around, and if you take one down the slot stays empty.
 
-The wall lists every claimed player, sorted by how many people hold their card. Players who haven't claimed never show up in any list.
+The wall lists every claimed player, sorted by how many people hold their card. Players who haven't claimed never show up on the wall or in any other public index.
 
 There are also sets, one per season, and a legend page that names every part of a card. And the card maker at /make lets you build a card from any splash and share it as a link without an account.
 

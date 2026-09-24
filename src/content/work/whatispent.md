@@ -32,7 +32,7 @@ I wanted to know what I spent today, this week and this month without typing any
 
 Plaid Link runs in the browser and hands back a public token. The server trades it for an access token and encrypts it before it goes in the database, so the plaintext token is never stored.
 
-Transactions come in through Plaid's sync endpoint with a cursor for each bank, so every pull is only what was added, changed or removed since last time. Plaid sends a webhook when a bank has updates and the sync kicks off on its own. Stripe webhooks keep the subscription status on the user up to date, and the pages check it before showing anything.
+Transactions come in through Plaid's sync endpoint with a cursor for each bank, so the first pull backfills history and every pull after that is only what was added, changed or removed since the last one. Plaid sends a webhook when a bank has updates and the sync kicks off on its own. Stripe webhooks keep the subscription status on the user up to date, and the pages check it before showing anything.
 
 All the data hangs off the user with cascading deletes, so removing a bank takes its accounts and transactions with it.
 
