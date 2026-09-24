@@ -12,7 +12,7 @@ order: 2
 
 ## What it is
 
-Amateur leagues and scrim teams run pick and ban over Discord and a spreadsheet. Scout Ahead gives them the real draft screen. Create a series, share one link, and whoever opens it picks a side and drafts. Spectators watch live. No account is required for any of it. Live since January 2025.
+Scout Ahead is a draft screen for amateur leagues and scrim teams. Create a series, share one link, and whoever opens it picks a side and drafts. Spectators watch live. No account is required for any of it. Live since January 2025.
 
 ## Features
 
