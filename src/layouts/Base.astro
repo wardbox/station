@@ -68,5 +68,26 @@ const nav = [
         <span>rev {rev}</span>
       </footer>
     </div>
+    <dialog id="lightbox" class="lightbox" aria-label="Image viewer">
+      <img alt="" />
+    </dialog>
+    <script>
+      const box = document.getElementById('lightbox') as HTMLDialogElement;
+      const big = box.querySelector('img')!;
+      const open = (img: HTMLImageElement) => {
+        big.src = img.currentSrc || img.src;
+        big.alt = img.alt;
+        box.showModal();
+      };
+      box.addEventListener('click', () => box.close());
+      for (const img of document.querySelectorAll<HTMLImageElement>('article img')) {
+        if (img.closest('a')) continue;
+        img.tabIndex = 0;
+        img.setAttribute('role', 'button');
+        img.classList.add('zoomable');
+        img.addEventListener('click', () => open(img));
+        img.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), open(img)));
+      }
+    </script>
   </body>
 </html>

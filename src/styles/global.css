@@ -97,3 +97,9 @@ body {
 
 /* Shiki writes its theme background inline; code sits on the slab like everything else. */
 .prose .astro-code { background-color: var(--card) !important; }
+
+.zoomable { cursor: zoom-in; }
+.lightbox { max-width: none; max-height: none; width: 100vw; height: 100vh; margin: 0; padding: 2rem; border: 0; background: transparent; cursor: zoom-out; }
+.lightbox[open] { display: grid; place-items: center; }
+.lightbox::backdrop { background: rgb(0 0 0 / 0.85); }
+.lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
